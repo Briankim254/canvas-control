@@ -1,9 +1,32 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
+import { SiMedibangpaint } from "react-icons/si";
 
 export default function Home() {
   return (
-    <main className="flex h-full flex-col items-center justify-center bg-sky-500">
-      <h1 className="text-4xl font-bold text-white">Welcome to Canvas Control</h1>
-    </main>
+    <>
+      
+      <section className="flex items-center flex-1">
+        <div className="flex flex-col w-full ">
+          <h1 className="text-5xl font-extrabold text-center lg:text-7xl 2xl:text-8xl">
+            <span className="text-transparent bg-gradient-to-br bg-clip-text from-teal-500 via-indigo-500 to-sky-500 dark:from-teal-200 dark:via-indigo-300 dark:to-sky-500">
+              Coming
+            </span>
+
+            <span className="text-transparent bg-gradient-to-tr bg-clip-text from-blue-500 via-pink-500 to-red-500 dark:from-sky-300 dark:via-pink-300 dark:to-red-500">
+              Soon
+            </span>
+          </h1>
+
+          <p className="max-w-3xl mx-auto mt-6 text-lg text-center text-gray-700 dark:text-white md:text-xl">
+            We are currently working on this page. Please check back soon.
+            <br />
+            <br />
+            In the meantime, you can check out our other pages.
+          </p>
+        </div>
+      </section>
+    </>
   );
 }
