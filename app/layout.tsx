@@ -129,7 +129,7 @@ export default async function RootLayout({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>
-                            {user.name }
+                            {user.name}
                             <div className="text-sm text-gray-500">
                               {user.email}
                             </div>
@@ -149,7 +149,7 @@ export default async function RootLayout({
                                 className="text-red-500 hover:text-red-600"
                                 type="submit"
                               >
-                                Logout
+                                Sign Out
                               </button>
                             </form>
                           </DropdownMenuItem>
