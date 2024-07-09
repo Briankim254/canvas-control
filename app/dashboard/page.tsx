@@ -1,6 +1,8 @@
 import React from 'react'
 import Sidebar from '@/components/sidebar'
 import { Component } from '@/components/charts/test'
+import { Component2 } from '@/components/charts/test2'
+import { Component3 } from '@/components/charts/test3'
 
 const page=()=> {
   return (
@@ -17,25 +19,15 @@ const page=()=> {
       {/* two cards equally placed in a 4*4 grid */}
 
       <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2">
-        <div className="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-            Total Visitors
-          </h4>
-          <p className="mt-2 text-3xl font-bold">
-            12, 678
-          </p>
+        <div className="p-4 ">
+         <Component3 />
         </div>
-        <div className="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-            Total Sales
-          </h4>
-          <p className="mt-2 text-3xl font-bold">
-            $ 89, 765
-          </p>
+        <div className="p-4 ">
+        <Component />
         </div>
       </div>
 
-      <Component />
+      <Component2 />
     </main>
     </div>
   )
