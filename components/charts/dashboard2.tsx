@@ -133,7 +133,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function Component2() {
+export function Dashboard2() {
   const [timeRange, setTimeRange] = React.useState("90d")
 
   const filteredData = chartData.filter((item) => {
