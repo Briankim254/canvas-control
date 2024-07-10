@@ -39,7 +39,7 @@ export default async function Home() {
             <ul className="space-y-2 list-none lg:space-y-0 lg:items-center lg:inline-flex">
               <li>
                 <a
-                  href="/dashboard"
+                  href="/admin/dashboard"
                   className="px-2 lg:px-6 py-6 text-sm border-b-2 border-transparent leading-[22px] md:px-3 text-gray-500 hover:text-blue-500 hover:border-blue-600"
                 >
                   {" "}
@@ -134,7 +134,7 @@ function SignInButton() {
     <form
       action={async () => {
         "use server";
-        await signIn(undefined, { redirectTo: "/dashboard" });
+        await signIn(undefined, { redirectTo: "/admin/dashboard" });
       }}
     >
       <Button type="submit">Sign In</Button>

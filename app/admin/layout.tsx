@@ -181,7 +181,7 @@ function SignInButton() {
     <form
       action={async () => {
         "use server";
-        await signIn();
+        await signIn(undefined, { redirectTo: "/admin/dashboard" });
       }}
     >
       <Button>Sign In</Button>
