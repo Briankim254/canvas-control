@@ -1,11 +1,23 @@
-import { DefaultSession } from "next-auth";
+import NextAuth, { type DefaultSession } from "next-auth";
 
 declare module "next-auth" {
-    interface session {
-        user: User & DefaultSession["user"]
-    }
-
-    interface user {
-        role: string |null;
-    }
+  interface Session {
+    user: {
+      role: string?;
+    } & DefaultSession["user"];
+  }
 }
+
+export const { auth, handlers } = NextAuth({
+  callbacks: {
+    session({ session, token, user }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          role: user.role,
+        },
+      };
+    },
+  },
+});
