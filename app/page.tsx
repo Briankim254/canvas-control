@@ -46,7 +46,6 @@ export default async function Home() {
                   Dashboard{" "}
                 </a>
               </li>
-             
             </ul>
             <div className="ml-auto">
               {user ? (
@@ -75,8 +74,9 @@ export default async function Home() {
                         </div>
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>Settings</DropdownMenuItem>
-                      <DropdownMenuItem>Support</DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link href="/admin/settings">Settings</Link>
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem>
                         <form
