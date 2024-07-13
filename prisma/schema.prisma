@@ -12,21 +12,35 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String       @unique
   emailVerified DateTime?
+  verification  verification @default(UNVERIFIED)
   image         String?
-  roleId        String?
   accounts      Account[]
   sessions      Session[]
   orders        Order[]
-  role          Role?     @relation(fields: [roleId], references: [id])
+  role          Role         @default(DEFAULT)
+  bio           String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
+}
+
+enum verification {
+  UNVERIFIED
+  VERIFIED
+}
+
+enum Role {
+  SUPER_ADMIN
+  STORE_MANAGER
+  CUSTOMER_SERVICE
+  CUSTOMER
+  DEFAULT
 }
 
 model Account {
@@ -70,18 +84,6 @@ model VerificationToken {
 
   @@id([identifier, token])
   @@map("verification_tokens")
-}
-
-model Role {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  description String?
-  users       User[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("roles")
 }
 
 model Artist {

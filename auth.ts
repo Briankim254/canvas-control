@@ -11,7 +11,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GitHub,
     Resend({
-      from: "auth@kimutai.xyz",
+      from: "Auth@kimutai.xyz",
     }),
   ],
 });
