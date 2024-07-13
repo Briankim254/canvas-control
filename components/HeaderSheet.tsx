@@ -8,6 +8,7 @@ import {
   LineChart,
   Package,
   PanelLeft,
+  ShoppingBag,
   ShoppingCart,
   Users2,
 } from "lucide-react";
@@ -31,44 +32,34 @@ function HeaderSheet() {
             <Link
               href="/"
               className={`group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base
-                ${
-                  pathname === "/admin"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
+                ${pathname === "" ? "text-accent-foreground bg-accent" : ""}`}
             >
               <SiMedibangpaint className="h-5 w-5 transition-all group-hover:scale-110" />
               <span className="sr-only">Pixels & Paint</span>
             </Link>
             <Link
-              href="/admin/dashboard"
+              href="/"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
-                ${
-                  pathname === "/admin/dashboard"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
+                ${pathname === "/" ? "text-accent-foreground bg-accent" : ""}`}
             >
               <Home className="h-5 w-5" />
               Dashboard
             </Link>
             <Link
-              href="/admin/orders"
-              className={`flex items-center gap-4 px-2.5 text-foreground
+              href="/orders"
+              className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                  pathname === "/admin/orders"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
+                pathname === "/orders" ? "text-accent-foreground bg-accent" : ""
+              }`}
             >
               <ShoppingCart className="h-5 w-5" />
               Orders
             </Link>
             <Link
-              href="/admin/products"
+              href="/products"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
                 ${
-                  pathname === "/admin/products"
+                  pathname === "/products"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -77,34 +68,32 @@ function HeaderSheet() {
               Products
             </Link>
             <Link
-              href="/admin/customers"
+              href="/customers"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                  pathname === "/admin/customers"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
+                pathname === "/customers"
+                  ? "text-accent-foreground bg-accent"
+                  : ""
+              }`}
             >
-              <Users2 className="h-5 w-5" />
+              <ShoppingBag className="h-5 w-5" />
               Customers
             </Link>
             <Link
-              href="/admin/analytics"
+              href="/users"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                  pathname === "/admin/analytics"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
+                pathname === "/users" ? "text-accent-foreground bg-accent" : ""
+              }`}
             >
               <Users2 className="h-5 w-5" />
-              Analytics
+              Users
             </Link>
             <Link
-              href="/admin/settings"
+              href="/settings"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
                 ${
-                  pathname === "/admin/settings"
+                  pathname === "/settings"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}

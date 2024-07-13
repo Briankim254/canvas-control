@@ -18,9 +18,6 @@ import {
   Package,
   PanelLeft,
   Search,
-  Settings,
-  ShoppingCart,
-  Users2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -161,7 +158,7 @@ function SignInButton() {
     <form
       action={async () => {
         "use server";
-        await signIn(undefined, { redirectTo: "/admin/dashboard" });
+        await signIn(undefined, { redirectTo: "/" });
       }}
     >
       <Button>Sign In</Button>
