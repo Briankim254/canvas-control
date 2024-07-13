@@ -12,13 +12,7 @@ import {
 import { auth, signIn, signOut } from "@/auth";
 import Link from "next/link";
 import { SiMedibangpaint } from "react-icons/si";
-import {
-  Home,
-  LineChart,
-  Package,
-  PanelLeft,
-  Search,
-} from "lucide-react";
+import { Home, LineChart, Package, PanelLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -44,6 +38,7 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import HeaderSheet from "@/components/HeaderSheet";
 import { redirect } from "next/navigation";
+import { Toaster, toast } from "sonner";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -62,9 +57,9 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   const user = session?.user;
-if (!user) {
-  redirect("/api/auth/signin");
-}
+  if (!user) {
+    redirect("/api/auth/signin");
+  }
 
   return (
     <html lang="en">
@@ -74,6 +69,7 @@ if (!user) {
           fontSans.variable
         )}
       >
+        <Toaster closeButton richColors />
         <>
           <TooltipProvider>
             <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -125,7 +121,7 @@ if (!user) {
                           </DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>
-                            <Link href="/admin/settings">Settings</Link>
+                            <Link href="/settings">Settings</Link>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>
