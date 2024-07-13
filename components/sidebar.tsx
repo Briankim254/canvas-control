@@ -10,6 +10,7 @@ import {
   LineChart,
   Package,
   Settings,
+  ShoppingBag,
   ShoppingCart,
   Users2,
 } from "lucide-react";
@@ -36,9 +37,9 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/dashboard"
+                href="/"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/dashboard"
+                  pathname === "/"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -91,28 +92,28 @@ export function Sidebar() {
                     : ""
                 }`}
               >
-                <Users2 className="h-5 w-5" />
+                <ShoppingBag className="h-5 w-5" />
                 <span className="sr-only">Customers</span>
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">Customers</TooltipContent>
           </Tooltip>
-          {/* <Tooltip>
+          <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/analytics"
+                href="/users"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/analytics"
+                  pathname === "/users"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
               >
-                <LineChart className="h-5 w-5" />
-                <span className="sr-only">Analytics</span>
+                <Users2 className="h-5 w-5" />
+                <span className="sr-only">Users</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Analytics</TooltipContent>
-          </Tooltip> */}
+            <TooltipContent side="right">Users</TooltipContent>
+          </Tooltip>
         </nav>
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
           <Tooltip>
