@@ -38,7 +38,8 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import HeaderSheet from "@/components/HeaderSheet";
 import { redirect } from "next/navigation";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -70,6 +71,8 @@ export default async function RootLayout({
         )}
       >
         <Toaster closeButton richColors />
+        <Analytics />
+        <SpeedInsights />
         <>
           <TooltipProvider>
             <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -148,7 +151,6 @@ export default async function RootLayout({
             </div>
           </TooltipProvider>
         </>
-        <Analytics />
       </body>
     </html>
   );
