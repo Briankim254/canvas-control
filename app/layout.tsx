@@ -82,7 +82,7 @@ export default async function RootLayout({
           <Analytics />
           <SpeedInsights />
           <>
-            <TooltipProvider>
+            <TooltipProvider delayDuration={200}>
               <div className="flex min-h-screen w-full flex-col bg-muted/40">
                 <Suspense fallback='Loading...'>
                   <Sidebar />
