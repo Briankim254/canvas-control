@@ -6,7 +6,7 @@ const nextConfig = {
                 hostname: 'avatars.githubusercontent.com',
             },
             {
-                hostname: 'images.unsplash.com', // Added new remote host
+                hostname: 'images.unsplash.com', 
             }
         ],
     },
