@@ -1,26 +1,12 @@
 import NextAuth, { type DefaultSession } from "next-auth";
+import type { verification, Role } from "@prisma/client";
 
 declare module "next-auth" {
   interface Session {
-    user: {
-      role: string;
-      verification: string;
-
-    } & DefaultSession["user"];
+    user: User & DefaultSession["user"];
+  }
+  interface User {
+    role: Role;
+    verification: verification;
   }
 }
-
-export const { auth, handlers } = NextAuth({
-  callbacks: {
-    session({ session, token, user }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          role: user.role,
-          verification: user.verification,
-        },
-      };
-    },
-  },
-});

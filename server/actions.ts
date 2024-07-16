@@ -1,6 +1,6 @@
 "use server";
 
-import { Payment } from "@/app/(admin)/users/columns";
+import { Payment } from "@/app/admin/users/columns";
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
 import { User } from "@prisma/client";
@@ -40,7 +40,6 @@ export const updateUserPartial = async (
   id: string,
   formData: Partial<User>
 ) => {
-
   // const session = await auth();
   // if (!session ) {
   //   throw new Error("Unauthorized");
@@ -49,13 +48,13 @@ export const updateUserPartial = async (
   //   throw new Error("Unauthorized");
   // }
   const user = await prisma.user.update({
-    where: { 
-      id : id
-     },
+    where: {
+      id: id,
+    },
     data: formData,
   });
-      revalidatePath("/admin/users/user/" + user.id);
-      return user;
+  revalidatePath("/admin/users/user/" + user.id);
+  return user;
 };
 
 export const deleteUser = async (id: string): Promise<User> => {

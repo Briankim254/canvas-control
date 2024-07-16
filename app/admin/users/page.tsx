@@ -7,7 +7,7 @@ async function getData() {
   return data;
 }
 
-export default async function Dashboard() {
+export default async function Home() {
   const data = await getData();
 
   return (
