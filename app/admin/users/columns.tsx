@@ -124,7 +124,7 @@ export const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>
-              <Link href={`/users/user/${user.id}`}>View User</Link>
+              <Link href={`/admin/users/user/${user.id}`}>View User</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {/* <DropdownMenuItem>Toggle user verification</DropdownMenuItem> */}
