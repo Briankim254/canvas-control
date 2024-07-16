@@ -37,9 +37,9 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/"
+                href="/admin/dashboard"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/"
+                  pathname === "/admin/dashboard"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -53,9 +53,9 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/orders"
+                href="/admin/orders"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/orders"
+                  pathname === "/admin/orders"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -69,9 +69,9 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/products"
+                href="/admin/products"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/products"
+                  pathname === "/admin/products"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -85,9 +85,9 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/customers"
+                href="/admin/customers"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/customers"
+                  pathname === "/admin/customers"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -101,9 +101,9 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/users"
+                href="/admin/users"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/users"
+                  pathname === "/admin/users"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -119,9 +119,9 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/settings"
+                href="/admin/settings"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/settings"
+                  pathname === "/admin/settings"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}

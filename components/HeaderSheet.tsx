@@ -30,7 +30,7 @@ function HeaderSheet() {
         <SheetContent side="left" className="sm:max-w-xs">
           <nav className="grid gap-6 text-lg font-medium">
             <Link
-              href="/"
+              href="#"
               className={`group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base
                 ${pathname === "" ? "text-accent-foreground bg-accent" : ""}`}
             >
@@ -38,28 +38,28 @@ function HeaderSheet() {
               <span className="sr-only">Pixels & Paint</span>
             </Link>
             <Link
-              href="/"
+              href="/admin/dashboard"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
-                ${pathname === "/" ? "text-accent-foreground bg-accent" : ""}`}
+                ${pathname === "/admin/dashboard" ? "text-accent-foreground bg-accent" : ""}`}
             >
               <Home className="h-5 w-5" />
               Dashboard
             </Link>
             <Link
-              href="/orders"
+              href="/admin/orders"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                pathname === "/orders" ? "text-accent-foreground bg-accent" : ""
+                pathname === "/admin/orders" ? "text-accent-foreground bg-accent" : ""
               }`}
             >
               <ShoppingCart className="h-5 w-5" />
               Orders
             </Link>
             <Link
-              href="/products"
+              href="/admin/products"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
                 ${
-                  pathname === "/products"
+                  pathname === "/admin/products"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}
@@ -68,10 +68,10 @@ function HeaderSheet() {
               Products
             </Link>
             <Link
-              href="/customers"
+              href="/admin/customers"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                pathname === "/customers"
+                pathname === "/admin/customers"
                   ? "text-accent-foreground bg-accent"
                   : ""
               }`}
@@ -80,20 +80,20 @@ function HeaderSheet() {
               Customers
             </Link>
             <Link
-              href="/users"
+              href="/admin/users"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                pathname === "/users" ? "text-accent-foreground bg-accent" : ""
+                pathname === "/admin/users" ? "text-accent-foreground bg-accent" : ""
               }`}
             >
               <Users2 className="h-5 w-5" />
               Users
             </Link>
             <Link
-              href="/settings"
+              href="/admin/settings"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
                 ${
-                  pathname === "/settings"
+                  pathname === "/admin/settings"
                     ? "text-accent-foreground bg-accent"
                     : ""
                 }`}

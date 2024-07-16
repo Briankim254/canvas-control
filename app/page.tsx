@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export default async function Home() {
   const session = await auth();
   const user = session?.user;
-
+  console.log(user);
   if (!user) {
     redirect("/api/auth/signin");
   }
@@ -16,15 +16,15 @@ export default async function Home() {
     redirect("/guest/verify");
   }
 
+  if (user.verification == "VERIFIED") {
+    redirect("/admin/dashboard");
+  }
+
   return (
     <>
       <main className="">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-            <Dashbord1 />
-            <Dashboard3 />
-          </div>
-          <Dashboard2 />
+          Welcome to Canvas Control
         </div>
       </main>
     </>

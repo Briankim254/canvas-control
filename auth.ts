@@ -1,17 +1,29 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import Resend from "next-auth/providers/resend";
 import prisma from "./prisma/client";
-import GitHub from "next-auth/providers/github";
-import resend from "next-auth/providers/resend";
+import type { Adapter } from "next-auth/adapters";
+import { type DefaultSession } from "next-auth";
+import type { verification, Role } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
-    GitHub,
     Resend({
       from: "Auth@kimutai.xyz",
+      name: "email",
     }),
   ],
+  callbacks: {
+    session({ session, user }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          role: user.role,
+          verification: user.verification,
+        },
+      };
+    },
+  },
 });

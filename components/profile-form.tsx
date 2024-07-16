@@ -18,7 +18,8 @@ import { Textarea } from "./ui/textarea";
 import { User } from "@prisma/client";
 import { updateUserPartial } from "@/server/actions";
 import { toast } from "sonner";
-import { revalidatePath } from "next/cache";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -33,6 +34,8 @@ const formSchema = z.object({
 });
 
 export function ProfileForm({ user }: { user: User }) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,6 +45,7 @@ export function ProfileForm({ user }: { user: User }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     try {
       toast.promise(
         updateUserPartial(user.id, values).then((data) => {
@@ -57,6 +61,8 @@ export function ProfileForm({ user }: { user: User }) {
     } catch (error) {
       console.error(error);
       toast.error("Failed to update profile.");
+    } finally {
+      setIsLoading(false);
     }
   }
   return (
@@ -99,7 +105,10 @@ export function ProfileForm({ user }: { user: User }) {
             </FormItem>
           )}
         />
-        <Button type="submit">Save Changes</Button>
+        <Button disabled={isLoading} type="submit">
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isLoading ? "Saving..." : "Save Changes"}
+        </Button>
       </form>
     </Form>
   );

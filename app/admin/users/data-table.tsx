@@ -19,7 +19,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -44,7 +44,7 @@ export function DataTable<TData, TValue>({
     []
   );
   const [columnVisibility, setColumnVisibility] =
-  React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
   const table = useReactTable({
     data,
     columns,
@@ -82,9 +82,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenuContent align="end">
             {table
               .getAllColumns()
-              .filter(
-                (column) => column.getCanHide()
-              )
+              .filter((column) => column.getCanHide())
               .map((column) => {
                 return (
                   <DropdownMenuCheckboxItem
@@ -97,7 +95,7 @@ export function DataTable<TData, TValue>({
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -152,6 +150,11 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      <div className="flex-1 text-sm text-muted-foreground">
+        {table.getFilteredSelectedRowModel().rows.length} of{" "}
+        {table.getFilteredRowModel().rows.length} row(s) selected.
+      </div>
+
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
