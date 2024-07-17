@@ -24,15 +24,12 @@ export default async function Home() {
     <>
       <div className="flex items-center">
         <div className="ml-auto flex items-center gap-2">
-          <Button className="m-3 h-8 gap-1">
-            <PlusCircle className="h-3.5 w-3.5" />
-            <Link
-              className="sr-only sm:not-sr-only sm:whitespace-nowrap"
-              href="/admin/artists/create"
-            >
-              Add Artist
-            </Link>
-          </Button>
+          <Link href="/admin/artists/create">
+            <Button className="m-3 h-8 gap-1 mx-2">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className=" sm:whitespace-nowrap">Add Artist</span>
+            </Button>
+          </Link>
         </div>
       </div>
       <div className="mx-auto py-5">
