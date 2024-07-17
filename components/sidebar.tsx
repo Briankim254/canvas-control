@@ -9,6 +9,7 @@ import {
   Home,
   LineChart,
   Package,
+  Palette,
   Settings,
   ShoppingBag,
   ShoppingCart,
@@ -113,6 +114,22 @@ export function Sidebar() {
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">Users</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/admin/artists"
+                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
+                  pathname === "/admin/artists"
+                    ? "text-accent-foreground bg-accent"
+                    : ""
+                }`}
+              >
+                <Palette className="h-5 w-5" />
+                <span className="sr-only">Artists</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Artists</TooltipContent>
           </Tooltip>
         </nav>
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">

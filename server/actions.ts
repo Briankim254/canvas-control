@@ -2,9 +2,11 @@
 
 import { Payment } from "@/app/admin/users/columns";
 import { auth } from "@/auth";
+import { artistFormSchema } from "@/app/admin/artists/create/create-artist-form";
 import prisma from "@/prisma/client";
-import { User } from "@prisma/client";
+import { User, Artist } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { toast } from "sonner";
 
 export const getUsers = async (): Promise<User[]> => {
@@ -64,25 +66,44 @@ export const deleteUser = async (id: string): Promise<User> => {
   return user;
 };
 
-export const getPayments = async (): Promise<Payment[]> => {
-  return [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
+export const getArtists = async (): Promise<Artist[]> => {
+  const artist = await prisma.artist.findMany();
+  return artist;
+};
+
+export const getArtist = async (id: string) => {
+  const artist = await prisma.artist.findUnique({
+    where: {
+      id: id,
     },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
+  });
+  return artist;
+};
+
+export const getCountries = async () => {
+  const countries = await fetch("https://api.first.org/data/v1/countries");
+  return countries;
+};
+
+export const createArtist = async (data: artistFormSchema) => {
+  const artist = await prisma.artist.create({
+    data,
+  });
+  revalidatePath("/admin/artists/create");
+  redirect("/admin/artists");
+  return artist;
+};
+
+export const updateArtistPartial = async (
+  id: string,
+  formData: artistFormSchema
+) => {
+  const artist = await prisma.artist.update({
+    where: {
+      id: id,
     },
-    {
-      id: "489e1d42",
-      amount: 125,
-      status: "processing",
-      email: "example@gmail.com",
-    },
-  ];
+    data: formData,
+  });
+  revalidatePath("/admin/artists/artist/" + artist.id);
+  return artist;
 };

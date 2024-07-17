@@ -7,6 +7,7 @@ import {
   Home,
   LineChart,
   Package,
+  Palette,
   PanelLeft,
   ShoppingBag,
   ShoppingCart,
@@ -40,7 +41,11 @@ function HeaderSheet() {
             <Link
               href="/admin/dashboard"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
-                ${pathname === "/admin/dashboard" ? "text-accent-foreground bg-accent" : ""}`}
+                ${
+                  pathname === "/admin/dashboard"
+                    ? "text-accent-foreground bg-accent"
+                    : ""
+                }`}
             >
               <Home className="h-5 w-5" />
               Dashboard
@@ -49,7 +54,9 @@ function HeaderSheet() {
               href="/admin/orders"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                pathname === "/admin/orders" ? "text-accent-foreground bg-accent" : ""
+                pathname === "/admin/orders"
+                  ? "text-accent-foreground bg-accent"
+                  : ""
               }`}
             >
               <ShoppingCart className="h-5 w-5" />
@@ -83,11 +90,25 @@ function HeaderSheet() {
               href="/admin/users"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
               ${
-                pathname === "/admin/users" ? "text-accent-foreground bg-accent" : ""
+                pathname === "/admin/users"
+                  ? "text-accent-foreground bg-accent"
+                  : ""
               }`}
             >
               <Users2 className="h-5 w-5" />
               Users
+            </Link>
+            <Link
+              href="/admin/atists"
+              className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
+              ${
+                pathname === "/admin/atists"
+                  ? "text-accent-foreground bg-accent"
+                  : ""
+              }`}
+            >
+              <Palette className="h-5 w-5" />
+              Artists
             </Link>
             <Link
               href="/admin/settings"

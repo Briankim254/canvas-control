@@ -90,6 +90,13 @@ model Artist {
   id       String    @id @default(cuid())
   name     String
   bio      String?
+  email    String
+  image    String?
+  phone    String?
+  country  String?
+  city     String?
+  state    String?
+  address  String?
   products Product[]
 
   createdAt DateTime @default(now())
