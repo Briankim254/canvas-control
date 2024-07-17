@@ -8,6 +8,7 @@ import { User, Artist } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
+import { ProfileFormValues } from "@/components/profile-form";
 
 export const getUsers = async (): Promise<User[]> => {
   const users = await prisma.user.findMany();
@@ -40,7 +41,7 @@ export const updateUser = async (id: string, data: User): Promise<User> => {
 
 export const updateUserPartial = async (
   id: string,
-  formData: Partial<User>
+  formData: ProfileFormValues
 ) => {
   // const session = await auth();
   // if (!session ) {
