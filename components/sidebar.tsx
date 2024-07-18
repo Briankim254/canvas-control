@@ -2,16 +2,14 @@
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  HandCoins,
   Home,
-  LineChart,
   Package,
   Palette,
   Settings,
-  ShoppingBag,
   ShoppingCart,
   Users2,
 } from "lucide-react";
@@ -93,7 +91,7 @@ export function Sidebar() {
                     : ""
                 }`}
               >
-                <ShoppingBag className="h-5 w-5" />
+                <HandCoins className="h-5 w-5" />
                 <span className="sr-only">Customers</span>
               </Link>
             </TooltipTrigger>

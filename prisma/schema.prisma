@@ -17,7 +17,6 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  orders        Order[]
   role          Role         @default(DEFAULT)
   bio           String?
 
@@ -127,7 +126,7 @@ model Order {
   tax           Float
   total         Float
   customerId    String
-  customer      User           @relation(fields: [customerId], references: [id])
+  customer      Customer       @relation(fields: [customerId], references: [id])
   orderProducts OrderProduct[]
 
   createdAt DateTime @default(now())
@@ -144,4 +143,19 @@ model OrderProduct {
 
   @@id([orderId, productId])
   @@map("order_products")
+}
+
+model Customer {
+  id      String  @id @default(cuid())
+  name    String
+  email   String?  @unique
+  phone   String?
+  address String?
+  city    String?
+  orders  Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("customers")
 }
