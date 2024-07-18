@@ -100,7 +100,7 @@ const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
                             await signOut();
                           }}
                         >
-                          <button type="submit" className="text-red-500">
+                          <button type="submit" className="text-red-500 block">
                             Sign Out
                           </button>
                         </form>

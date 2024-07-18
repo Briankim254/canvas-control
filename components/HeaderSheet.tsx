@@ -4,12 +4,12 @@ import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import {
+  HandCoins,
   Home,
   LineChart,
   Package,
   Palette,
   PanelLeft,
-  ShoppingBag,
   ShoppingCart,
   Users2,
 } from "lucide-react";
@@ -83,7 +83,7 @@ function HeaderSheet() {
                   : ""
               }`}
             >
-              <ShoppingBag className="h-5 w-5" />
+              <HandCoins className="h-5 w-5" />
               Customers
             </Link>
             <Link
