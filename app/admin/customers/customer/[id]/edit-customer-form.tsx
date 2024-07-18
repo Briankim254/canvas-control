@@ -15,64 +15,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "../../../../components/ui/textarea";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader2, Phone } from "lucide-react";
-import { createArtist, getCountries } from "@/server/actions";
+import { createCustomer } from "@/server/actions";
+import { Customer } from "@prisma/client";
 
-const ArtistFormSchema = z.object({
+const CustomerFormSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email(),
-  bio: z
-    .string()
-    .min(5, {
-      message: "Bio must be at least 5 characters.",
-    })
-    .max(500, {
-      message: "Bio must not be longer than 500 characters.",
-    }),
+  address: z.string().min(2).max(100),
   phone: z.string().min(10).max(17),
-  country: z.string().min(2).max(50),
-  city: z.string().min(2).max(50),
+  city: z.string().min(2).max(80),
 });
 
-export type artistFormSchema = z.infer<typeof ArtistFormSchema>;
-type Country = {
-  country: string;
-  region: string;
-};
-
-export function CreateArtistForm() {
-  const [countries, setCountries] = useState([]);
-  useEffect(() => {
-    const fetchCountries = async () => {
-      const data = await fetch("https://api.first.org/data/v1/countries");
-      const countries = await data.json();
-      setCountries(countries.data);
-    };
-    fetchCountries();
-  }, []);
-  console.log(countries);
+export function EditArtistForm({ customer }: { customer: Customer }) {
   const [isLoading, setIsLoading] = useState(false);
-
-  const form = useForm<z.infer<typeof ArtistFormSchema>>({
-    resolver: zodResolver(ArtistFormSchema),
+  console.log(isLoading);
+  const form = useForm<z.infer<typeof CustomerFormSchema>>({
+    resolver: zodResolver(CustomerFormSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      bio: "",
-      phone: "",
-      country: "",
-      city: "",
+      name: customer.name,
+      email: customer.email || "",
+      phone: customer.phone || "",
+      city: customer.city || "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof ArtistFormSchema>) {
+  async function onSubmit(values: z.infer<typeof CustomerFormSchema>) {
     setIsLoading(true);
     try {
       toast.promise(
-        createArtist(values).then((data) => {
+        createCustomer(values).then((data) => {
           return data;
         }),
         {
@@ -98,12 +72,12 @@ export function CreateArtistForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Customer Name</FormLabel>
                 <FormControl>
                   <Input placeholder="your account username" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's public display name.
+                  This is the customer's valid name.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -119,7 +93,7 @@ export function CreateArtistForm() {
                   <Input placeholder="your email address" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's email address.
+                  This is the customer's email address.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -135,7 +109,7 @@ export function CreateArtistForm() {
                   <Input placeholder="your phone number" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's phone number.
+                  This is the customer's phone number.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -143,14 +117,16 @@ export function CreateArtistForm() {
           />
           <FormField
             control={form.control}
-            name="country"
+            name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Country</FormLabel>
+                <FormLabel>Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="your country" {...field} />
+                  <Input placeholder="your address" {...field} />
                 </FormControl>
-                <FormDescription>This is the artist's country.</FormDescription>
+                <FormDescription>
+                  This is the customer's address.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -164,28 +140,7 @@ export function CreateArtistForm() {
                 <FormControl>
                   <Input placeholder="your city" {...field} />
                 </FormControl>
-                <FormDescription>This is the artist's city.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bio</FormLabel>
-                <FormControl>
-                  <Textarea
-                    rows={10}
-                    placeholder="Tell us a little bit about yourself"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  You can be as creative as you want here.
-                </FormDescription>
+                <FormDescription>This is the customer's city.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

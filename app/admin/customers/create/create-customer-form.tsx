@@ -15,81 +15,51 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader2, Phone } from "lucide-react";
-import {
-  createArtist,
-  getCountries,
-  updateArtistPartial,
-} from "@/server/actions";
-import { Artist } from "@prisma/client";
+import { createCustomer } from "@/server/actions";
 
-const ArtistFormSchema = z.object({
+const CustomerFormSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email(),
-  bio: z
-    .string()
-    .min(5, {
-      message: "Bio must be at least 5 characters.",
-    })
-    .max(500, {
-      message: "Bio must not be longer than 500 characters.",
-    }),
+  address: z.string().min(2).max(100),
   phone: z.string().min(10).max(17),
-  country: z.string().min(2).max(50),
-  city: z.string().min(2).max(50),
+  city: z.string().min(2).max(80),
 });
 
-export type artistFormSchema = z.infer<typeof ArtistFormSchema>;
-// type Country = {
-//   country: string;
-//   region: string;
-// };
+export type CustomerFormSchema = z.infer<typeof CustomerFormSchema>;
 
-export function EditArtistForm({ artist }: { artist: Artist }) {
-  // const [countries, setCountries] = useState([]);
-  // useEffect(() => {
-  //   const fetchCountries = async () => {
-  //     const data = await fetch("https://api.first.org/data/v1/countries");
-  //     const countries = await data.json();
-  //     setCountries(countries.data);
-  //   };
-  //   fetchCountries();
-  // }, []);
-  // console.log(countries);
+export function CreateArtistForm() {
   const [isLoading, setIsLoading] = useState(false);
-
-  const form = useForm<z.infer<typeof ArtistFormSchema>>({
-    resolver: zodResolver(ArtistFormSchema),
+  console.log(isLoading);
+  const form = useForm<z.infer<typeof CustomerFormSchema>>({
+    resolver: zodResolver(CustomerFormSchema),
     defaultValues: {
-      name: artist.name || "",
-      email: artist.email || "",
-      bio: artist.bio || "",
-      phone: artist.phone || "",
-      country: artist.country || "",
-      city: artist.city || "",
+      name: "",
+      email: "",
+      phone: "",
+      city: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof ArtistFormSchema>) {
+  async function onSubmit(values: z.infer<typeof CustomerFormSchema>) {
     setIsLoading(true);
     try {
       toast.promise(
-        updateArtistPartial(artist.id, values).then((data) => {
+        createCustomer(values).then((data) => {
           return data;
         }),
         {
           loading: "Loading...",
-          description: "Updating profile for " + artist.name,
-          success: (data) => "Artist updated successfully.",
+          description: "Creating new artist",
+          success: (data) => "Artist created successfully.",
           error: "Error",
         }
       );
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update artist.");
+      toast.error("Failed to create artist.");
     } finally {
       setIsLoading(false);
     }
@@ -103,12 +73,12 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Customer Name</FormLabel>
                 <FormControl>
                   <Input placeholder="your account username" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's public display name.
+                  This is the customer's valid name.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -124,7 +94,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
                   <Input placeholder="your email address" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's email address.
+                  This is the customer's email address.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -140,7 +110,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
                   <Input placeholder="your phone number" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's phone number.
+                  This is the customer's phone number.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -148,14 +118,16 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
           />
           <FormField
             control={form.control}
-            name="country"
+            name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Country</FormLabel>
+                <FormLabel>Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="your country" {...field} />
+                  <Input placeholder="your address" {...field} />
                 </FormControl>
-                <FormDescription>This is the artist's country.</FormDescription>
+                <FormDescription>
+                  This is the customer's address.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -169,28 +141,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
                 <FormControl>
                   <Input placeholder="your city" {...field} />
                 </FormControl>
-                <FormDescription>This is the artist's city.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bio</FormLabel>
-                <FormControl>
-                  <Textarea
-                    rows={10}
-                    placeholder="Tell us a little bit about yourself"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  You can be as creative as you want here.
-                </FormDescription>
+                <FormDescription>This is the customer's city.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

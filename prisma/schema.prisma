@@ -121,9 +121,10 @@ model Product {
 model Order {
   id            String         @id @default(cuid())
   status        String
+  currency      String
   subtotal      Float
   shipping      Float
-  tax           Float
+  tax           Float          @default(0)
   total         Float
   customerId    String
   customer      Customer       @relation(fields: [customerId], references: [id])
@@ -148,7 +149,7 @@ model OrderProduct {
 model Customer {
   id      String  @id @default(cuid())
   name    String
-  email   String?  @unique
+  email   String? @unique
   phone   String?
   address String?
   city    String?

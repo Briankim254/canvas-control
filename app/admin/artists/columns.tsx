@@ -27,6 +27,7 @@ import Link from "next/link";
 
 export const columns: ColumnDef<Artist>[] = [
   {
+    enableHiding: false,
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -47,6 +48,7 @@ export const columns: ColumnDef<Artist>[] = [
     ),
   },
   {
+    enableHiding: false,
     accessorKey: "email",
     header: ({ column }) => {
       return (
@@ -61,6 +63,7 @@ export const columns: ColumnDef<Artist>[] = [
     },
   },
   {
+    enableHiding: false,
     accessorKey: "name",
     header: "Name",
   },
@@ -86,6 +89,7 @@ export const columns: ColumnDef<Artist>[] = [
     },
   },
   {
+    enableHiding: false,
     id: "actions",
     cell: ({ row }) => {
       const artist = row.original;

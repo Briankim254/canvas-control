@@ -20,7 +20,6 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Loader2, Phone } from "lucide-react";
 import {
-  createArtist,
   getCountries,
   updateArtistPartial,
 } from "@/server/actions";
@@ -42,7 +41,6 @@ const ArtistFormSchema = z.object({
   city: z.string().min(2).max(50),
 });
 
-export type artistFormSchema = z.infer<typeof ArtistFormSchema>;
 // type Country = {
 //   country: string;
 //   region: string;
