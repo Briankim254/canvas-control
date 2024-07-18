@@ -1,4 +1,4 @@
-import { CreateArtistForm } from "./create-artist-form";
+import { CreateArtistForm } from "./create-customer-form";
 import {
   Card,
   CardContent,

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Artist, User } from "@prisma/client";
+import { Customer } from "@prisma/client";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,16 +16,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 
-// export type Artist = {
-//   id: string;
-//   name: string;
-//   phone: string;
-//   country: string;
-//   city: string;
-//   email: string;
-// };
-
-export const columns: ColumnDef<Artist>[] = [
+export const columns: ColumnDef<Customer>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -69,26 +60,24 @@ export const columns: ColumnDef<Artist>[] = [
     header: "Phone",
   },
   {
-    accessorKey: "country",
-    header: "Country",
+    accessorKey: "address",
+    header: "Address",
   },
   {
-    accessorKey: "city",
-    header: "City",
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Registed On",
+    accessorKey: "orders",
+    header: "NO of orders",
     cell: ({ row }) => {
-      const date = new Date(row.original.createdAt);
-      const formatted = new Intl.DateTimeFormat("en-US").format(date);
-      return <div>{formatted}</div>;
+      return (
+        <div className="text-right pr-4 font-medium">
+          {row.getValue("orders")}
+        </div>
+      );
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const artist = row.original;
+      const customer = row.original;
 
       return (
         <DropdownMenu>
@@ -101,14 +90,13 @@ export const columns: ColumnDef<Artist>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>
-              <Link href={`/admin/artists/artist/${artist.id}`}>
-                View artist
+              <Link href={`/admin/customers/customer/${customer.id}`}>
+                View customer
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem>Toggle artist verification</DropdownMenuItem> */}
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(artist.id)}
+              onClick={() => navigator.clipboard.writeText(customer.id)}
             >
               Copy ID
             </DropdownMenuItem>

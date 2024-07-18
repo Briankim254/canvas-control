@@ -4,11 +4,12 @@ import { Payment } from "@/app/admin/users/columns";
 import { auth } from "@/auth";
 import { artistFormSchema } from "@/app/admin/artists/create/create-artist-form";
 import prisma from "@/prisma/client";
-import { User, Artist } from "@prisma/client";
+import { User, Artist, Customer } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
 import { ProfileFormValues } from "@/components/profile-form";
+import { CustomerFormSchema } from "@/app/admin/customers/create/create-customer-form";
 
 export const getUsers = async (): Promise<User[]> => {
   const users = await prisma.user.findMany();
@@ -28,7 +29,8 @@ export const createUser = async (data: User): Promise<User> => {
   const user = await prisma.user.create({
     data,
   });
-  return user;
+  revalidatePath("/admin/users");
+  redirect("/admin/users");
 };
 
 export const updateUser = async (id: string, data: User): Promise<User> => {
@@ -91,7 +93,7 @@ export const createArtist = async (data: artistFormSchema) => {
   const artist = await prisma.artist.create({
     data,
   });
-  revalidatePath("/admin/artists/create");
+  revalidatePath("/admin/artists");
   redirect("/admin/artists");
   return artist;
 };
@@ -108,4 +110,42 @@ export const updateArtistPartial = async (
   });
   revalidatePath("/admin/artists/artist/" + artist.id);
   return artist;
+};
+
+export const getCustomers = async () => {
+  const customers = await prisma.customer.findMany({
+    include: {
+      _count: {
+        select: { orders: true },
+      },
+    },
+  });
+  const customersWithAlias = customers.map((customer) => ({
+    ...customer,
+    orders: customer._count.orders,
+  }));
+  return customersWithAlias;
+};
+
+export const getCustomer = async (id: string) => {
+  const customer = await prisma.customer.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      _count: {
+        select: { orders: true },
+      },
+      orders: true,
+    },
+  });
+  return customer;
+};
+
+export const createCustomer = async (data: CustomerFormSchema) => {
+  const customer = await prisma.customer.create({
+    data,
+  });
+  revalidatePath("/admin/customers");
+  redirect("/admin/customers");
 };
