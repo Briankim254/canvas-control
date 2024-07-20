@@ -52,7 +52,7 @@ export function EditArtistForm({ customer }: { customer: Customer }) {
         {
           loading: "Loading...",
           description: "Creating new artist",
-          success: (data) => "Artist created successfully.",
+          success: () => "Artist created successfully.",
           error: "Error",
         }
       );
