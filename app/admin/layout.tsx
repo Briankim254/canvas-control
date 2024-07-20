@@ -1,9 +1,7 @@
-import {
-  TooltipProvider,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { auth, signIn, signOut } from "@/auth";
 import Link from "next/link";
-import {  Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -27,6 +25,7 @@ import { Sidebar } from "@/components/sidebar";
 import HeaderSheet from "@/components/HeaderSheet";
 import { ModeToggle } from "@/components/ui/mode-trigger";
 import { redirect } from "next/navigation";
+import { SearchCommandDialog } from "@/components/custom-command";
 
 const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();
@@ -38,9 +37,9 @@ const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
     redirect("/guest/verify");
   }
 
-
   return (
     <>
+     
       <TooltipProvider delayDuration={200}>
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
           <Sidebar />
@@ -55,12 +54,7 @@ const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
                 </BreadcrumbList>
               </Breadcrumb> */}
               <div className="relative ml-auto flex-1 md:grow-0">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search..."
-                  className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                />
+              <SearchCommandDialog user={user} />
               </div>
               <ModeToggle />
               {user ? (
@@ -130,7 +124,7 @@ async function SignInButton() {
         await signIn(undefined, { redirectTo: "/" });
       }}
     >
-      <Button type="submit" >Sign In</Button>
+      <Button type="submit">Sign In</Button>
     </form>
   );
 }
