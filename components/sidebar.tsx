@@ -5,7 +5,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  Brush,
   HandCoins,
   Home,
   Package,
@@ -16,12 +15,9 @@ import {
   Users2,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import { SiMedibangpaint } from "react-icons/si";
 import { usePathname } from "next/navigation";
 
 export function Sidebar() {
-  const [isMinimized, setIsMinimized] = useState(false);
   const pathname = usePathname();
 
   return (

@@ -5,10 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Payment, columns } from "./columns";
+import {  columns } from "./columns";
 import { DataTable } from "./data-table";
 import { getUsers } from "@/server/actions";
-import { Suspense } from "react";
 
 async function getData() {
   const data = await getUsers();

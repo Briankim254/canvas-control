@@ -4,12 +4,13 @@ import { Payment } from "@/app/admin/users/columns";
 import { auth } from "@/auth";
 import { artistFormSchema } from "@/app/admin/artists/create/create-artist-form";
 import prisma from "@/prisma/client";
-import { User, Artist, Customer } from "@prisma/client";
+import { User, Artist, Customer, Product } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
 import { ProfileFormValues } from "@/components/profile-form";
 import { CustomerFormSchema } from "@/app/admin/customers/create/create-customer-form";
+import { ProductFormSchema } from "@/app/admin/products/create/page";
 
 export const getUsers = async (): Promise<User[]> => {
   const users = await prisma.user.findMany();
@@ -95,7 +96,6 @@ export const createArtist = async (data: artistFormSchema) => {
   });
   revalidatePath("/admin/artists");
   redirect("/admin/artists");
-  return artist;
 };
 
 export const updateArtistPartial = async (
@@ -148,4 +148,80 @@ export const createCustomer = async (data: CustomerFormSchema) => {
   });
   revalidatePath("/admin/customers");
   redirect("/admin/customers");
+};
+
+export const CreateProduct = async (data: ProductFormSchema) => {
+  const product = await prisma.product.create({
+    data,
+  });
+  revalidatePath("/admin/products");
+  redirect("/admin/products");
+};
+
+export const getProducts = async () => {
+  const products = await prisma.product.findMany({
+    include: {
+      _count: {
+        select: { orderProducts: true },
+      },
+    },
+  });
+  const productsWithAlias = products.map((product) => ({
+    ...product,
+    orders: product._count.orderProducts,
+  }));
+  return productsWithAlias;
+};
+
+export const getProduct = async (id: string) => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  return product;
+};
+
+export const getProductOrders = async (id: string) => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      _count: {
+        select: { orderProducts: true },
+      },
+      orderProducts: {
+        select: {
+          order: true,
+        },
+      },
+    },
+  });
+  return product;
+};
+
+export const updateProductPartial = async (
+  id: string,
+  formData: ProductFormSchema
+) => {
+  const product = await prisma.product.update({
+    where: {
+      id: id,
+    },
+    data: formData,
+  });
+  revalidatePath("/admin/products/product/" + product.id);
+  return product;
+};
+
+export const deleteProduct = async (id: string) => {
+  const product = await prisma.product.delete({
+    where: {
+      id: id,
+    },
+  });
+  revalidatePath("/admin/products");
+  revalidatePath("/admin/products/product/" + product.id);
+  return product;
 };

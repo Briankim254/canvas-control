@@ -104,10 +104,11 @@ model Artist {
 model Product {
   id            String         @id @default(cuid())
   name          String
-  price         Float
+  price         Float 
   status        String
-  description   String
-  image         String
+  description   String?
+  image         String?
+  stock         Int           @default(0)
   artistId      String
   artist        Artist         @relation(fields: [artistId], references: [id], onDelete: Cascade)
   orderProducts OrderProduct[]

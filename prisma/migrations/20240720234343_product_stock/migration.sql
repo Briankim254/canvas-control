@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "products" ADD COLUMN     "stock" INTEGER NOT NULL DEFAULT 0,
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "image" DROP NOT NULL;
