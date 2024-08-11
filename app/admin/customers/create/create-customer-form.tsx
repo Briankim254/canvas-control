@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2, Phone } from "lucide-react";
-import { createCustomer } from "@/server/actions";
+// import { createCustomer } from "@/server/actions";
 
 const CustomerFormSchema = z.object({
   name: z.string().min(2).max(50),
@@ -46,17 +46,8 @@ export function CreateArtistForm() {
   async function onSubmit(values: z.infer<typeof CustomerFormSchema>) {
     setIsLoading(true);
     try {
-      toast.promise(
-        createCustomer(values).then((data) => {
-          return data;
-        }),
-        {
-          loading: "Loading...",
-          description: "Creating new artist",
-          success: (data) => "Artist created successfully.",
-          error: "Error",
-        }
-      );
+      // await createCustomer(values);
+      toast.success("Artist created successfully.");
     } catch (error) {
       console.error(error);
       toast.error("Failed to create artist.");
