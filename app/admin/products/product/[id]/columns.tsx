@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Customer, Order } from "@prisma/client";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { toast } from "sonner";
 
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "id",
     header: "Order ID",

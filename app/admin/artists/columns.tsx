@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Artist, User } from "@prisma/client";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,7 @@ import Link from "next/link";
 //   email: string;
 // };
 
-export const columns: ColumnDef<Artist>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     enableHiding: false,
     id: "select",
@@ -80,11 +79,36 @@ export const columns: ColumnDef<Artist>[] = [
     header: "City",
   },
   {
+    accessorKey: "verificationStatus",
+    header: "Verified",
+    cell: ({ row }) => {
+      const verified = row.original.verified;
+      return (
+        <Badge variant={verified ? "default" : "destructive"}>
+          {verified ? "Verified" : "Not Verified"}
+        </Badge>
+      );
+    },
+  },
+  // {
+  //   accessorKey: "signupStatus",
+  //   header: "Signup Status",
+  //   cell: ({ row }) => {
+  //     const incomplete = row.original.incomplete;
+  //     console.log(incomplete);
+  //     return (
+  //       <Badge variant={"outline"}>
+  //         {incomplete == "incomplete" ? "Incomplete" : "Complete"}
+  //       </Badge>
+  //     );
+  //   },
+  // },
+  {
     accessorKey: "createdAt",
     header: "Registed On",
     cell: ({ row }) => {
-      const date = new Date(row.original.createdAt);
-      const formatted = new Intl.DateTimeFormat("en-US").format(date);
+      const date = new Date(row.original.createdDate);
+      const formatted = date.toDateString();
       return <div>{formatted}</div>;
     },
   },
@@ -104,11 +128,9 @@ export const columns: ColumnDef<Artist>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Link href={`/admin/artists/artist/${artist.id}`}>
-                View artist
-              </Link>
-            </DropdownMenuItem>
+            <Link href={`/admin/artists/artist/${artist.id}`}>
+              <DropdownMenuItem>View artist</DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
             {/* <DropdownMenuItem>Toggle artist verification</DropdownMenuItem> */}
             <DropdownMenuItem

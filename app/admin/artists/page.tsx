@@ -1,6 +1,5 @@
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { getArtists } from "@/server/actions";
 import {
   Card,
   CardContent,
@@ -11,9 +10,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 async function getData() {
-  const data = await getArtists();
+  const res = await fetch(`${process.env.BASE_URL}/artists`).then((res) =>
+    res.json()
+  );
+  console.log(res);
+  if (res.message !== "success") {
+    toast.error("Failed to fetch data");
+    return [];
+  }
+  const data = res.data || [];
   return data;
 }
 

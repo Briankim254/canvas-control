@@ -1,4 +1,4 @@
-import { signOut } from "@/auth";
+import { logout } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import React from "react";
@@ -34,7 +34,7 @@ async function SignOutButton() {
     <form
       action={async () => {
         "use server";
-        await signOut();
+        await logout();
       }}
     >
       <Button variant={"default"} type="submit">

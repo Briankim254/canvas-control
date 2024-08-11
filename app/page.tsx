@@ -1,24 +1,16 @@
-import { auth } from "@/auth";
-import { Dashbord1 } from "@/components/charts/dashboard1";
-import { Dashboard2 } from "@/components/charts/dashboard2";
-import { Dashboard3 } from "@/components/charts/dashboard3";
+import { getSession } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const session = await auth();
-  const user = session?.user;
+  const user = await getSession();
+
   if (!user) {
-    redirect("/api/auth/signin");
+    redirect("/signin");
   }
 
-  if (user.verification == "UNVERIFIED") {
-    redirect("/guest/verify");
-  }
-
-  if (user.verification == "VERIFIED") {
+  if (user) {
     redirect("/admin/dashboard");
   }
-
   return (
     <>
       <main className="">

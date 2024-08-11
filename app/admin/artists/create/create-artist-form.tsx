@@ -22,7 +22,8 @@ import { Loader2, Phone } from "lucide-react";
 import { createArtist, getCountries } from "@/server/actions";
 
 const ArtistFormSchema = z.object({
-  name: z.string().min(2).max(50),
+  firstName: z.string().min(2).max(50),
+  lastName: z.string().min(2).max(50),
   email: z.string().email(),
   bio: z
     .string()
@@ -44,22 +45,13 @@ type Country = {
 };
 
 export function CreateArtistForm() {
-  const [countries, setCountries] = useState([]);
-  useEffect(() => {
-    const fetchCountries = async () => {
-      const data = await fetch("https://api.first.org/data/v1/countries");
-      const countries = await data.json();
-      setCountries(countries.data);
-    };
-    fetchCountries();
-  }, []);
-  console.log(countries);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof ArtistFormSchema>>({
     resolver: zodResolver(ArtistFormSchema),
     defaultValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       bio: "",
       phone: "",
@@ -95,15 +87,31 @@ export function CreateArtistForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="name"
+            name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="your account username" {...field} />
+                  <Input placeholder="Legal account fistname" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's public display name.
+                  This is the artist's first name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Legal account lastname" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is the artist's last name.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -116,7 +124,7 @@ export function CreateArtistForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="your email address" {...field} />
+                  <Input placeholder="valid email address" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is the artist's email address.
@@ -132,7 +140,7 @@ export function CreateArtistForm() {
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="your phone number" {...field} />
+                  <Input placeholder="valid Phone number" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is the artist's phone number.
@@ -148,7 +156,7 @@ export function CreateArtistForm() {
               <FormItem>
                 <FormLabel>Country</FormLabel>
                 <FormControl>
-                  <Input placeholder="your country" {...field} />
+                  <Input placeholder="country" {...field} />
                 </FormControl>
                 <FormDescription>This is the artist's country.</FormDescription>
                 <FormMessage />
@@ -162,7 +170,7 @@ export function CreateArtistForm() {
               <FormItem>
                 <FormLabel>City</FormLabel>
                 <FormControl>
-                  <Input placeholder="your city" {...field} />
+                  <Input placeholder="city" {...field} />
                 </FormControl>
                 <FormDescription>This is the artist's city.</FormDescription>
                 <FormMessage />
@@ -178,7 +186,7 @@ export function CreateArtistForm() {
                 <FormControl>
                   <Textarea
                     rows={10}
-                    placeholder="Tell us a little bit about yourself"
+                    placeholder="Tell us a little bit about the artist"
                     className="resize-none"
                     {...field}
                   />

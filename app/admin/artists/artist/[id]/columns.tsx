@@ -16,7 +16,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-// import { deleteProduct } from "@/server/actions";
 
 export const columns: ColumnDef<any>[] = [
   {

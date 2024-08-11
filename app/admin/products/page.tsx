@@ -11,17 +11,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { getProducts } from "@/server/actions";
+import { toast } from "sonner";
 
 async function getData() {
-  const data = await getProducts();
+  const res = await fetch(`${process.env.BASE_URL}/products`).then((res) =>
+    res.json()
+  );
+  console.log(res);
+  if (res.message !== "success") {
+    toast.error("Failed to fetch products");
+    const data = [];
+  }
+  const data = res.data;
   return data;
 }
 export default async function Products() {
   const data = await getData();
-  const published = data.filter((product) => product.status === "published");
-  const draft = data.filter((product) => product.status === "draft");
-  const archived = data.filter((product) => product.status === "archived");
+  const published = data;
+  const draft = data;
+  const archived = data;
   return (
     <>
       <Tabs defaultValue="all">

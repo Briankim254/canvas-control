@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/theme-provider";
-import { auth } from "@/auth";
+import { getSession } from "@/auth";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -25,12 +25,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
-  const user = session?.user;
-  if (!user) {
-    redirect("/api/auth/signin");
-  }
-
+  const user = await getSession();
   return (
     <html lang="en">
       <body
@@ -48,13 +43,9 @@ export default async function RootLayout({
           <Toaster closeButton richColors />
           <Analytics />
           <SpeedInsights />
-          <>
-            {children}
-          </>
+          <>{children}</>
         </ThemeProvider>
       </body>
     </html>
   );
 }
-
-

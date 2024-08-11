@@ -19,14 +19,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Loader2, Phone } from "lucide-react";
-import {
-  getCountries,
-  updateArtistPartial,
-} from "@/server/actions";
-import { Artist } from "@prisma/client";
+import { getCountries, updateArtist } from "@/server/actions";
 
 const ArtistFormSchema = z.object({
-  name: z.string().min(2).max(50),
+  firstName: z.string().min(2).max(50),
+  lastName: z.string().min(2).max(50),
   email: z.string().email(),
   bio: z
     .string()
@@ -41,28 +38,15 @@ const ArtistFormSchema = z.object({
   city: z.string().min(2).max(50),
 });
 
-// type Country = {
-//   country: string;
-//   region: string;
-// };
-
-export function EditArtistForm({ artist }: { artist: Artist }) {
-  // const [countries, setCountries] = useState([]);
-  // useEffect(() => {
-  //   const fetchCountries = async () => {
-  //     const data = await fetch("https://api.first.org/data/v1/countries");
-  //     const countries = await data.json();
-  //     setCountries(countries.data);
-  //   };
-  //   fetchCountries();
-  // }, []);
-  // console.log(countries);
+export function EditArtistForm({ artist }: { artist: any }) {
+  console.log(artist);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof ArtistFormSchema>>({
     resolver: zodResolver(ArtistFormSchema),
     defaultValues: {
-      name: artist.name || "",
+      firstName: artist.firstName || "",
+      lastName: artist.lastName || "",
       email: artist.email || "",
       bio: artist.bio || "",
       phone: artist.phone || "",
@@ -75,7 +59,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
     setIsLoading(true);
     try {
       toast.promise(
-        updateArtistPartial(artist.id, values).then((data) => {
+        updateArtist(artist.id, values).then((data) => {
           return data;
         }),
         {
@@ -98,15 +82,31 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="name"
+            name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="your account username" {...field} />
+                  <Input placeholder="Legal account fistname" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is the artist's public display name.
+                  This is the artist's first name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Legal account lastname" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is the artist's last name.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -119,7 +119,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="your email address" {...field} />
+                  <Input placeholder="valid email address" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is the artist's email address.
@@ -135,7 +135,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="your phone number" {...field} />
+                  <Input placeholder="valid Phone number" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is the artist's phone number.
@@ -151,7 +151,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
               <FormItem>
                 <FormLabel>Country</FormLabel>
                 <FormControl>
-                  <Input placeholder="your country" {...field} />
+                  <Input placeholder="country" {...field} />
                 </FormControl>
                 <FormDescription>This is the artist's country.</FormDescription>
                 <FormMessage />
@@ -165,7 +165,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
               <FormItem>
                 <FormLabel>City</FormLabel>
                 <FormControl>
-                  <Input placeholder="your city" {...field} />
+                  <Input placeholder="city" {...field} />
                 </FormControl>
                 <FormDescription>This is the artist's city.</FormDescription>
                 <FormMessage />
@@ -181,7 +181,7 @@ export function EditArtistForm({ artist }: { artist: Artist }) {
                 <FormControl>
                   <Textarea
                     rows={10}
-                    placeholder="Tell us a little bit about yourself"
+                    placeholder="Tell us a little bit about the artist"
                     className="resize-none"
                     {...field}
                   />

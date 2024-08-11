@@ -5,13 +5,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {  columns } from "./columns";
+import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { getUsers } from "@/server/actions";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
 async function getData() {
-  const data = await getUsers();
-  return data;
+  const res = await fetch(`${process.env.BASE_URL}/users`, {
+    // headers: {
+    //   Authorization: `Bearer ${process.env.ADMIN_TOKEN}`,
+    // },
+  });
+  console.log(res);
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return res.json().then((data) => data.data);
 }
 
 export default async function Home() {
@@ -19,13 +29,23 @@ export default async function Home() {
 
   return (
     <>
-      <div className="mx-auto py-10">
+      <div className="mx-auto px-2">
+        <div className="flex items-center mx-4 my-3">
+          <div className="ml-auto flex items-center gap-2">
+            <Link href="/admin/users/create" className="">
+              <Button size="sm" className="h-8 gap-1 ">
+                <PlusCircle className="h-3.5 w-3.5" />
+                <span className="sm:whitespace-nowrap hidden sm:block">
+                  Add User
+                </span>
+              </Button>
+            </Link>
+          </div>
+        </div>
         <Card>
           <CardHeader>
             <CardTitle>Users</CardTitle>
-            <CardDescription>
-              List of all Admin users
-            </CardDescription>
+            <CardDescription>List of all Admin users</CardDescription>
           </CardHeader>
           <CardContent>
             <DataTable columns={columns} data={data} />

@@ -15,8 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "./ui/textarea";
-import { Role, User, verification } from "@prisma/client";
-import { updateUserPartial } from "@/server/actions";
+import { updateUser } from "@/server/actions";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -31,29 +30,22 @@ import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  bio: z
-    .string()
-    .min(10, {
-      message: "Bio must be at least 10 characters.",
-    })
-    .max(500, {
-      message: "Bio must not be longer than 500 characters.",
-    }),
-  verification: z.nativeEnum(verification),
-  role: z.nativeEnum(Role),
+  phone: z.string().min(10).max(17),
+  email: z.string().email(),
+  role: z.string().min(2).max(80),
 });
 
 export type ProfileFormValues = z.infer<typeof formSchema>;
 
-export function ProfileForm({ user }: { user: User }) {
+export function ProfileForm({ user }: { user: any }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: user.name || "",
-      bio: user.bio || "",
-      verification: user.verification || "UNVERIFIED",
+      phone: user.phone || "",
+      email: user.email || "",
       role: user.role || "DEFAULT",
     },
   });
@@ -62,7 +54,7 @@ export function ProfileForm({ user }: { user: User }) {
     setIsLoading(true);
     try {
       toast.promise(
-        updateUserPartial(user.id, values).then((data) => {
+        updateUser(user.id, values).then((data) => {
           return data;
         }),
         {
@@ -89,7 +81,11 @@ export function ProfileForm({ user }: { user: User }) {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="your account username" {...field} />
+                <Input
+                  disabled
+                  placeholder="your account username"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 This is your public display name.
@@ -100,26 +96,33 @@ export function ProfileForm({ user }: { user: User }) {
         />
         <FormField
           control={form.control}
-          name="bio"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Bio</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Textarea
-                  rows={10}
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
+                <Input disabled placeholder="your account email" {...field} />
               </FormControl>
-              <FormDescription>
-                You can be as creative as you want here.
-              </FormDescription>
+              <FormDescription>This is your email address.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone</FormLabel>
+              <FormControl>
+                <Input placeholder="your account phone" {...field} />
+              </FormControl>
+              <FormDescription>This is your phone number.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* <FormField
           control={form.control}
           name="verification"
           render={({ field }) => (
@@ -142,7 +145,7 @@ export function ProfileForm({ user }: { user: User }) {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="role"

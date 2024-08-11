@@ -18,27 +18,27 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2, Phone } from "lucide-react";
-import { createCustomer } from "@/server/actions";
-import { Customer } from "@prisma/client";
+import { updateCustomer } from "@/server/actions";
 
 const CustomerFormSchema = z.object({
-  name: z.string().min(2).max(50),
+  firstName: z.string().min(2).max(80),
+  lastName: z.string().min(2).max(80),
   email: z.string().email(),
-  address: z.string().min(2).max(100),
   phone: z.string().min(10).max(17),
-  city: z.string().min(2).max(80),
 });
 
-export function EditArtistForm({ customer }: { customer: Customer }) {
+export type CustomerFormValues = z.infer<typeof CustomerFormSchema>;
+
+export function EditArtistForm({ customer , id }: { customer: any, id: string }) {
   const [isLoading, setIsLoading] = useState(false);
   console.log(isLoading);
   const form = useForm<z.infer<typeof CustomerFormSchema>>({
     resolver: zodResolver(CustomerFormSchema),
     defaultValues: {
-      name: customer.name,
+      firstName: customer.firstName || "",
+      lastName: customer.lastName || "",
       email: customer.email || "",
       phone: customer.phone || "",
-      city: customer.city || "",
     },
   });
 
@@ -46,19 +46,20 @@ export function EditArtistForm({ customer }: { customer: Customer }) {
     setIsLoading(true);
     try {
       toast.promise(
-        createCustomer(values).then((data) => {
+        updateCustomer(values, id).then((data) => {
           return data;
         }),
         {
           loading: "Loading...",
-          description: "Creating new artist",
-          success: () => "Artist created successfully.",
-          error: "Error",
+          description: "Saving changes...",
+          success: (data) => `Changes saved successfully`,
+          error: (error) => {
+            return `${error}`;
+          },
         }
       );
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to create artist.");
+      toast.error("Failed to save changes to customer");
     } finally {
       setIsLoading(false);
     }
@@ -69,15 +70,31 @@ export function EditArtistForm({ customer }: { customer: Customer }) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="name"
+            name="firstName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Customer Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="your account username" {...field} />
+                  <Input placeholder="your customer frist name" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is the customer's valid name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="your customer last name" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is the customer's last name.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -111,36 +128,6 @@ export function EditArtistForm({ customer }: { customer: Customer }) {
                 <FormDescription>
                   This is the customer's phone number.
                 </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="your address" {...field} />
-                </FormControl>
-                <FormDescription>
-                  This is the customer's address.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>City</FormLabel>
-                <FormControl>
-                  <Input placeholder="your city" {...field} />
-                </FormControl>
-                <FormDescription>This is the customer's city.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

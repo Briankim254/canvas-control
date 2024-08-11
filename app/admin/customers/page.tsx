@@ -1,6 +1,5 @@
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import {  getCustomers } from "@/server/actions";
 import {
   Card,
   CardContent,
@@ -13,7 +12,16 @@ import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 
 async function getData() {
-  const data = await getCustomers();
+  const res = await fetch(`${process.env.BASE_URL}/customers`).then((res) =>
+    res.json() || []
+  );
+  console.log(res);
+  if (res.message !== "success") {
+    const data = res.data || [];
+  }
+
+  const data = res.data || [];
+
   return data;
 }
 
@@ -36,7 +44,9 @@ export default async function Home() {
         <Card>
           <CardHeader>
             <CardTitle>Customers</CardTitle>
-            <CardDescription>List of all Customers and sum of their orders </CardDescription>
+            <CardDescription>
+              List of all Customers and sum of their orders{" "}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <DataTable columns={columns} data={data} />

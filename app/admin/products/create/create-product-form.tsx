@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/select";
 
 import { Textarea } from "@/components/ui/textarea";
-import { EditProduct } from "@/server/actions";
+import { CreateProduct } from "@/server/actions";
 import {
   Popover,
   PopoverContent,
@@ -53,7 +53,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 20; // 20mb
 const ACCEPTED_FILE_TYPES = [
@@ -85,7 +84,7 @@ const ProductFormSchema = z.object({
 });
 export type ProductFormSchema = z.infer<typeof ProductFormSchema>;
 
-export function EditProductForm(props: {
+export function CreateProductForm(props: {
   categories: any;
   artists: any;
   paper: any;
@@ -96,7 +95,6 @@ export function EditProductForm(props: {
   mediums: any;
   colors: any;
   themes: any;
-  product: any;
 }) {
   const {
     categories,
@@ -109,27 +107,24 @@ export function EditProductForm(props: {
     mediums,
     colors,
     themes,
-    product,
   } = props;
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof ProductFormSchema>>({
     resolver: zodResolver(ProductFormSchema),
     defaultValues: {
-      title: product.title || "",
-      description: product.description || "",
-      artist: product.artist.id || "",
-      subject: product.tags.subjectMatterId || "",
-      medium: product.tags.mediumId || "",
-      style: product.tags.styleId || "",
-      palette: product.tags.colorPaletteId || "",
-      theme: product.tags.themeId || "",
-      defaultSize: product.defaultSizeId || "",
-      defaultPaper: product.defaultPaperId || "",
-      price: product.price || "",
-      stock: product.stock || "",
-      category: product.categoryId || "",
-      image: [],
+      title: "",
+      description: "",
+      artist: "",
+      subject: "",
+      medium: "",
+      style: "",
+      palette: "",
+      theme: "",
+      defaultSize: 0,
+      defaultPaper: "",
+      price: "",
+      stock: 0,
     },
   });
   const fileRef = form.register("image");
@@ -154,7 +149,7 @@ export function EditProductForm(props: {
     }
     setIsLoading(true);
     try {
-      const res: any = await EditProduct(product.id, data);
+      const res: any = await CreateProduct(data);
       if (res.error) {
         setIsLoading(false);
         toast.error(res.error);
@@ -182,12 +177,6 @@ export function EditProductForm(props: {
                   <span className="sr-only">Back</span>
                 </Button>
               </Link>
-              <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                {product.title}
-              </h1>
-              <Badge variant="outline" className="ml-auto sm:ml-0 bg-green-600 border-white">
-                In stock
-              </Badge>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
                 <Link href="/admin/products">
                   <Button variant="outline" size="sm">
@@ -502,10 +491,7 @@ export function EditProductForm(props: {
                                 </FormControl>
                                 <SelectContent>
                                   {themes.map((theme: any) => (
-                                    <SelectItem
-                                      value={theme.id.toString()}
-                                      key={theme.id}
-                                    >
+                                    <SelectItem value={theme.id.toString()} key={theme.id}>
                                       {theme.name}
                                     </SelectItem>
                                   ))}
@@ -708,10 +694,7 @@ export function EditProductForm(props: {
                                 </FormControl>
                                 <SelectContent>
                                   {sizes.map((size: any) => (
-                                    <SelectItem
-                                      value={size.id.toString()}
-                                      key={size.id}
-                                    >
+                                    <SelectItem value={size.id.toString()} key={size.id}>
                                       {size.size} - {size.orientation}
                                       <span className="text-muted-foreground">
                                         {" "}
@@ -747,10 +730,7 @@ export function EditProductForm(props: {
                                 </FormControl>
                                 <SelectContent>
                                   {paper.map((paper: any) => (
-                                    <SelectItem
-                                      value={paper.id.toString()}
-                                      key={paper.id}
-                                    >
+                                    <SelectItem value={paper.id.toString()} key={paper.id}>
                                       {paper.name} - {paper.type}
                                       <span className="text-muted-foreground">
                                         {" "}
@@ -782,7 +762,7 @@ export function EditProductForm(props: {
                         alt="Product image"
                         className="aspect-square w-full rounded-md object-cover"
                         height="300"
-                        src={product.image || "/placeholder.png"}
+                        src="/placeholder.png"
                         width="300"
                       />
                       <div className="grid grid-cols-3 gap-2">

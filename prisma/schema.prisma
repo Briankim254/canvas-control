@@ -3,161 +3,72 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-}
-
-model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String       @unique
-  emailVerified DateTime?
-  verification  verification @default(UNVERIFIED)
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  role          Role         @default(DEFAULT)
-  bio           String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("users")
-}
-
-enum verification {
-  UNVERIFIED
-  VERIFIED
-}
-
-enum Role {
-  SUPER_ADMIN
-  STORE_MANAGER
-  CUSTOMER_SERVICE
-  CUSTOMER
-  DEFAULT
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  staffId           Int
+  type              String         @db.VarChar(255)
+  provider          String         @db.VarChar(255)
+  providerAccountId String         @db.VarChar(255)
+  refresh_token     String?        @db.VarChar(255)
+  access_token      String?        @db.VarChar(255)
   expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token_type        String?        @db.VarChar(255)
+  scope             String?        @db.VarChar(255)
+  id_token          String?        @db.VarChar(255)
+  session_state     String?        @db.VarChar(255)
+  createdAt         DateTime       @default(now()) @db.DateTime(0)
+  updatedAt         DateTime       @default(now()) @updatedAt @db.DateTime(0)
+  staff_accounts    User @relation(fields: [staffId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "accounts_ibfk_1")
 
   @@id([provider, providerAccountId])
+  @@index([staffId], map: "staffId")
   @@map("accounts")
 }
 
 model Session {
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionToken   String         @id @unique(map: "sessionToken") @db.VarChar(255)
+  staffId        Int
+  expires        DateTime       @db.DateTime(0)
+  createdAt      DateTime       @default(now()) @db.DateTime(0)
+  updatedAt      DateTime       @default(now()) @updatedAt @db.DateTime(0)
+  staff_accounts User @relation(fields: [staffId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "sessions_ibfk_1")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  @@index([staffId], map: "staffId")
   @@map("sessions")
 }
 
 model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
+  identifier String   @db.VarChar(255)
+  token      String   @db.VarChar(255)
+  expires    DateTime @db.DateTime(0)
 
   @@id([identifier, token])
   @@map("verification_tokens")
 }
 
-model Artist {
-  id       String    @id @default(cuid())
-  name     String
-  bio      String?
-  email    String
-  image    String?
-  phone    String?
-  country  String?
-  city     String?
-  state    String?
-  address  String?
-  products Product[]
+model User {
+  id            Int       @id @default(autoincrement())
+  first_name    String    @db.VarChar(50)
+  last_name     String    @db.VarChar(50)
+  email         String    @unique(map: "email") @db.VarChar(100)
+  phone         String    @unique(map: "phone_UNIQUE") @db.VarChar(20)
+  password      String    @db.VarChar(255)
+  created_on    DateTime? @default(now()) @db.Timestamp(0)
+  edited_on     DateTime? @default(now()) @db.Timestamp(0)
+  role          String    @db.VarChar(100)
+  emailVerified DateTime? @db.DateTime(0)
+  verification  String    @default("UNVERIFIED") @db.VarChar(255)
+  Image         String?   @db.VarChar(255)
+  accounts      Account[]
+  sessions      Session[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("artists")
+  @@map("staff_accounts")
 }
 
-model Product {
-  id            String         @id @default(cuid())
-  name          String
-  price         Float 
-  status        String
-  description   String?
-  image         String?
-  stock         Int           @default(0)
-  artistId      String
-  artist        Artist         @relation(fields: [artistId], references: [id], onDelete: Cascade)
-  orderProducts OrderProduct[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("products")
-}
-
-model Order {
-  id            String         @id @default(cuid())
-  status        String
-  currency      String
-  subtotal      Float
-  shipping      Float
-  tax           Float          @default(0)
-  total         Float
-  customerId    String
-  customer      Customer       @relation(fields: [customerId], references: [id])
-  orderProducts OrderProduct[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("orders")
-}
-
-model OrderProduct {
-  orderId   String
-  productId String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@id([orderId, productId])
-  @@map("order_products")
-}
-
-model Customer {
-  id      String  @id @default(cuid())
-  name    String
-  email   String? @unique
-  phone   String?
-  address String?
-  city    String?
-  orders  Order[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("customers")
+model staff_roles {
+  id               String @id @db.VarChar(100)
+  role_description String @db.VarChar(45)
 }

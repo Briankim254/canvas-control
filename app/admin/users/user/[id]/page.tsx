@@ -1,4 +1,3 @@
-import { getUser } from "@/server/actions";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
@@ -6,12 +5,19 @@ import { ProfileForm } from "@/components/profile-form";
 import { Badge } from "@/components/ui/badge";
 
 async function getData(id: string) {
-  const data = await getUser(id);
+  const res = await fetch(`${process.env.BASE_URL}/users/${id}`).then((res) =>
+    res.json()
+  );
+  if (res.message !== "success") {
+    return null;
+  }
+  const data = res.data;
   return data;
 }
 
 export default async function UserPage({ params }: { params: { id: string } }) {
-  const user = await getData(params.id);
+  const data = await getData(params.id);
+  const user = data[0];
   return (
     <div className="flex flex-col w-full max-w-6xl mx-auto gap-8 p-6 md:p-10 md:flex-row">
       <div className="flex-1 bg-muted rounded-lg p-6 md:p-8">
@@ -21,7 +27,7 @@ export default async function UserPage({ params }: { params: { id: string } }) {
             <AvatarFallback>
               {user?.name
                 ?.split(" ")
-                .map((name) => name[0])
+                .map((name: any[]) => name[0])
                 .join("")}
             </AvatarFallback>
           </Avatar>
@@ -34,23 +40,21 @@ export default async function UserPage({ params }: { params: { id: string } }) {
         <div className="grid gap-4">
           <div className="flex gap-2 tex">
             <h3 className="text-md font-semibold">Role:</h3>
-            <Badge variant="default">{ user?.role.replace(/_/g, ' ').toLowerCase() }</Badge>
+            <Badge variant="default">
+              {user?.role.replace(/_/g, " ").toLowerCase()}
+            </Badge>
           </div>
           <div className="flex gap-2">
-            <h3 className="text-md font-semibold">Verification:</h3>
-            <Badge variant="default">{user?.verification.toLowerCase()}</Badge>
+            <h3 className="text-md font-semibold">Phone:</h3>
+            <Badge variant="default">{user?.phone}</Badge>
           </div>
         </div>
         <Separator className="my-6" />
         <div className="grid gap-4">
           <div>
-            <h3 className="text-lg font-semibold">About</h3>
-            <p className="text-muted-foreground">{user?.bio || "N/A"}</p>
-          </div>
-          <div>
             <h3 className="text-lg font-semibold">Joined</h3>
             <p className="text-muted-foreground">
-              {user?.createdAt?.toString()}
+              {new Date(user?.createdOn).toDateString()}
             </p>
           </div>
         </div>

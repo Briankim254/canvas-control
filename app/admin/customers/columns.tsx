@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Customer } from "@prisma/client";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +14,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
+import { deleteCustomer } from "@/server/actions";
 
-export const columns: ColumnDef<Customer>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -38,6 +39,21 @@ export const columns: ColumnDef<Customer>[] = [
     ),
   },
   {
+    header: "Name",
+    cell: ({ row }) => {
+      const customer = row.original.firstName + " " + row.original.lastName;
+      return (
+        <div>
+          <div className="font-semibold">
+            <Link href={`/admin/customers/customer/${row.original.id}`}>
+              {customer}
+            </Link>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "email",
     header: ({ column }) => {
       return (
@@ -52,24 +68,27 @@ export const columns: ColumnDef<Customer>[] = [
     },
   },
   {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
     accessorKey: "phone",
     header: "Phone",
   },
   {
-    accessorKey: "address",
-    header: "Address",
+    accessorKey: "createdOn",
+    header: "Created On",
+    cell: ({ row }) => {
+      return (
+        <div className="text-muted-foreground">
+          {new Date(row.original.createdOn).toDateString()}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "orders",
     header: "NO of orders",
     cell: ({ row }) => {
       return (
-        <div className="text-right pr-4 font-medium">
-          {row.getValue("orders")}
+        <div className="text-left font-medium">
+          {row.getValue("orders") || "N/A"}
         </div>
       );
     },
@@ -99,6 +118,15 @@ export const columns: ColumnDef<Customer>[] = [
               onClick={() => navigator.clipboard.writeText(customer.id)}
             >
               Copy ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={async () => {
+                await deleteCustomer(customer.id);
+                revalidatePath("/admin/customers");
+              }}
+            >
+              <button className="w-full text-left text-red-500">Delete</button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

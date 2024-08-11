@@ -1,4 +1,3 @@
-import { getCustomer } from "@/server/actions";
 import { Separator } from "@/components/ui/separator";
 import { EditArtistForm } from "./edit-customer-form";
 import {
@@ -10,21 +9,32 @@ import {
 } from "@/components/ui/card";
 import { DataTable } from "../../data-table";
 import { columns } from "./columns";
+import { toast } from "sonner";
 
 async function getData(id: string) {
-  const data = await getCustomer(id);
+  const data = await fetch(`${process.env.BASE_URL}/customers/${id}`).then(
+    (res) => res.json()
+  );
+  if (data.message !== "success") {
+    toast.error("Failed to fetch customer data");
+    return null;
+  }
   return data;
 }
 
 export default async function UserPage({ params }: { params: { id: string } }) {
-  const customer = await getData(params.id);
+  const data = await getData(params.id);
+  const customer = data?.data;
+  console.log(customer);
   return (
     <>
       <div className="flex flex-col w-full max-w-6xl mx-auto gap-8 p-6 md:p-10 md:flex-row">
         <div className="flex-1 bg-muted rounded-lg p-6 md:p-8">
           <div className="flex items-center ">
             <div className="grid gap-1">
-              <div className="text-xl font-bold">{customer?.name}</div>
+              <div className="text-xl font-bold">
+                {customer?.firstName} {customer?.lastName}
+              </div>
               <div className="text-muted-foreground">{customer?.email}</div>
             </div>
           </div>
@@ -37,32 +47,22 @@ export default async function UserPage({ params }: { params: { id: string } }) {
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold">Address</h3>
+              <h3 className="text-lg font-semibold">Number of Orders</h3>
               <p className="text-muted-foreground">
-                {customer?.address || "N/A"}
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold">City</h3>
-              <p className="text-muted-foreground">{customer?.city || "N/A"}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold">Niumber of Orders</h3>
-              <p className="text-muted-foreground">
-                {customer?._count?.orders}
+                {customer?._count?.orders || "N/A"}
               </p>
             </div>
             <div>
               <h3 className="text-lg font-semibold">Joined</h3>
               <p className="text-muted-foreground">
-                {customer?.createdAt?.toString()}
+                {new Date(customer?.createdOn).toDateString()}
               </p>
             </div>
           </div>
         </div>
         <div className="w-full max-w-md bg-muted rounded-lg p-6 md:p-8">
           <h2 className="text-2xl font-bold mb-6">customer Profile</h2>
-          {customer && <EditArtistForm customer={customer} />}
+          {customer && <EditArtistForm customer={customer} id={params.id} />}
         </div>
       </div>
       <div className="mx-auto py-5 px-5">

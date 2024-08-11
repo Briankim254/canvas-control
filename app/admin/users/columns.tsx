@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { User } from "@prisma/client";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,14 +14,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { toast } from "sonner";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
+export type User = {
   id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
   email: string;
+  name: string;
+  phone: string;
+  role: string;
+  createdOn: string;
 };
 
 export const columns: ColumnDef<User>[] = [
@@ -65,12 +67,11 @@ export const columns: ColumnDef<User>[] = [
     header: "Name",
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "createdOn",
     header: "Registed On",
     cell: ({ row }) => {
-      // display the date in a dd/mm/yyyy format
-      const date = new Date(row.original.createdAt);
-      const formatted = new Intl.DateTimeFormat("en-US").format(date);
+      const date = new Date(row.original.createdOn);
+      const formatted = date.toDateString();
       return <div>{formatted}</div>;
     },
   },
@@ -94,19 +95,8 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "verification",
-    header: "Verification",
-    cell: ({ row }) => {
-      const user = row.original;
-
-      return user.verification == "VERIFIED" ? (
-        <Badge className="bg-green-500 text-white" variant="outline">
-          Verified
-        </Badge>
-      ) : (
-        <Badge variant="destructive">Unverified</Badge>
-      );
-    },
+    accessorKey: "phone",
+    header: "phone",
   },
   {
     id: "actions",
@@ -129,7 +119,13 @@ export const columns: ColumnDef<User>[] = [
             <DropdownMenuSeparator />
             {/* <DropdownMenuItem>Toggle user verification</DropdownMenuItem> */}
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
+              onClick={() =>
+                toast.promise(navigator.clipboard.writeText(user.id), {
+                  loading: "Copying ID...",
+                  success: "ID copied!",
+                  error: "Failed to copy ID",
+                })
+              }
             >
               Copy ID
             </DropdownMenuItem>
