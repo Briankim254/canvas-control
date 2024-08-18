@@ -13,9 +13,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { toast } from "sonner";
 import React, { useEffect, useState } from "react";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Info, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, PlusCircle, Upload } from "lucide-react";
@@ -69,7 +74,7 @@ const ProductFormSchema = z.object({
   description: z
     .string()
     .min(3, "Description is too short")
-    .max(150, "Description is too long"),
+    .max(200, "Description is too long"),
   artist: z.string().nonempty(),
   category: z.coerce.number(),
   subject: z.string().nonempty(),
@@ -79,7 +84,7 @@ const ProductFormSchema = z.object({
   theme: z.string().nonempty(),
   defaultSize: z.coerce.number(),
   defaultPaper: z.string().nonempty(),
-  price: z.string().nonempty(),
+  basePrice: z.string().nonempty(),
   stock: z.coerce.number(),
 });
 export type ProductFormSchema = z.infer<typeof ProductFormSchema>;
@@ -123,7 +128,7 @@ export function CreateProductForm(props: {
       theme: "",
       defaultSize: 0,
       defaultPaper: "",
-      price: "",
+      basePrice: "",
       stock: 0,
     },
   });
@@ -133,7 +138,7 @@ export function CreateProductForm(props: {
     const data = new FormData();
     data.append("title", values.title);
     data.append("description", values.description);
-    data.append("price", values.price);
+    data.append("basePrice", values.basePrice);
     data.append("stock", values.stock.toString());
     data.append("category", values.category.toString());
     data.append("subject", values.subject);
@@ -284,7 +289,7 @@ export function CreateProductForm(props: {
                   <CardContent>
                     <FormField
                       control={form.control}
-                      name="price"
+                      name="basePrice"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Price</FormLabel>
@@ -491,7 +496,10 @@ export function CreateProductForm(props: {
                                 </FormControl>
                                 <SelectContent>
                                   {themes.map((theme: any) => (
-                                    <SelectItem value={theme.id.toString()} key={theme.id}>
+                                    <SelectItem
+                                      value={theme.id.toString()}
+                                      key={theme.id}
+                                    >
                                       {theme.name}
                                     </SelectItem>
                                   ))}
@@ -682,7 +690,33 @@ export function CreateProductForm(props: {
                           name="defaultSize"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Size</FormLabel>
+                              <FormLabel className="flex items-center gap-2">
+                                <span>Size</span>{" "}
+                                <HoverCard>
+                                  <HoverCardTrigger>
+                                    <Info className=" h-3" />
+                                  </HoverCardTrigger>
+                                  <HoverCardContent>
+                                    {sizes.map((size: any) => (
+                                      <div key={size.id}>
+                                        <div>
+                                          {size.paper_size} - ${size.price}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                          <p>{size.inches}</p>
+                                          <p>{size.millimeters}</p>
+                                          <p>
+                                            Created on:{" "}
+                                            {new Date(
+                                              size.created_on
+                                            ).toLocaleDateString()}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </HoverCardContent>
+                                </HoverCard>
+                              </FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value.toString()}
@@ -694,12 +728,19 @@ export function CreateProductForm(props: {
                                 </FormControl>
                                 <SelectContent>
                                   {sizes.map((size: any) => (
-                                    <SelectItem value={size.id.toString()} key={size.id}>
-                                      {size.size} - {size.orientation}
-                                      <span className="text-muted-foreground">
-                                        {" "}
-                                        (+${size.additionalPrice})
-                                      </span>
+                                    <SelectItem
+                                      value={size.id.toString()}
+                                      key={size.id}
+                                    >
+                                      <div>
+                                        <div>
+                                          {size.paper_size} - {size.centimeters}
+                                        </div>
+                                        <span className="text-muted-foreground">
+                                          {" "}
+                                          (${size.price})
+                                        </span>
+                                      </div>
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -730,12 +771,11 @@ export function CreateProductForm(props: {
                                 </FormControl>
                                 <SelectContent>
                                   {paper.map((paper: any) => (
-                                    <SelectItem value={paper.id.toString()} key={paper.id}>
-                                      {paper.name} - {paper.type}
-                                      <span className="text-muted-foreground">
-                                        {" "}
-                                        (+${paper.additionalPrice})
-                                      </span>
+                                    <SelectItem
+                                      value={paper.id.toString()}
+                                      key={paper.id}
+                                    >
+                                      {paper.name}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

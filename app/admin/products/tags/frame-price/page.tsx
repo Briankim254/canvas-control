@@ -1,0 +1,84 @@
+import { Separator } from "@/components/ui/separator";
+import { AccountForm } from "./account-form";
+import { toast } from "sonner";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Frame } from "lucide-react";
+import Image from "next/image";
+
+export default async function SettingsAccountPage() {
+  const frames = await fetch(
+    `${process.env.BASE_URL}/products/frame-prices`
+  ).then((res) => res.json());
+  console.log(frames);
+  if (frames.message !== "success") {
+    toast.error("Failed to fetch frames");
+    const frames = [];
+  }
+  const data = frames.data;
+  return (
+    <div className="space-y-6">
+      <div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium">Frame Prices</h3>
+            <p className="text-sm text-muted-foreground">
+              Update frame prices here.
+            </p>
+          </div>
+          <div>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="sm" className="h-8 gap-1 ">
+                  <Frame className="h-3.5 w-3.5" />
+                  <span className="sm:whitespace-nowrap hidden sm:block">
+                    Add Frame Price
+                  </span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Add Frame</SheetTitle>
+                  <SheetDescription>
+                    Fill out the form below to add a new frame.
+                  </SheetDescription>
+                </SheetHeader>
+                <AccountForm />
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+      <Separator />
+      <div className="grid w-full grid-cols-1 gap-6 mx-auto lg:grid-cols-3">
+        {data.map((data: any) => (
+          <div className="p-6" key={data.id}>
+            <Image
+              src={data.frameImage || "/placeholder.png"}
+              alt={data.frameName}
+              className="aspect-square rounded-md object-cover"
+              height="200"
+              width="200"
+              key={data.id}
+            />
+            <h1 className="mx-auto mb-8 font-semibold leading-none tracking-tighter" key={data.id}>
+              {data.frameName}
+            </h1>
+            <p className="text-sm text-muted-foreground" key={data.id}>
+              $ {data.price} - {data.sizeName}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

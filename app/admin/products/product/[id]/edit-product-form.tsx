@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import React, { useEffect, useState } from "react";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Info, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, PlusCircle, Upload } from "lucide-react";
@@ -54,6 +54,7 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 20; // 20mb
 const ACCEPTED_FILE_TYPES = [
@@ -80,7 +81,7 @@ const ProductFormSchema = z.object({
   theme: z.string().nonempty(),
   defaultSize: z.coerce.number(),
   defaultPaper: z.string().nonempty(),
-  price: z.string().nonempty(),
+  basePrice: z.string().nonempty(),
   stock: z.coerce.number(),
 });
 export type ProductFormSchema = z.infer<typeof ProductFormSchema>;
@@ -126,7 +127,7 @@ export function EditProductForm(props: {
       theme: product.tags.themeId || "",
       defaultSize: product.defaultSizeId || "",
       defaultPaper: product.defaultPaperId || "",
-      price: product.price || "",
+      basePrice: product.basePrice || "",
       stock: product.stock || "",
       category: product.categoryId || "",
       image: [],
@@ -138,7 +139,7 @@ export function EditProductForm(props: {
     const data = new FormData();
     data.append("title", values.title);
     data.append("description", values.description);
-    data.append("price", values.price);
+    data.append("price", values.basePrice);
     data.append("stock", values.stock.toString());
     data.append("category", values.category.toString());
     data.append("subject", values.subject);
@@ -295,7 +296,7 @@ export function EditProductForm(props: {
                   <CardContent>
                     <FormField
                       control={form.control}
-                      name="price"
+                      name="basePrice"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Price</FormLabel>
@@ -696,7 +697,33 @@ export function EditProductForm(props: {
                           name="defaultSize"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Size</FormLabel>
+                              <FormLabel className="flex items-center gap-2">
+                                <span>Size</span>{" "}
+                                <HoverCard>
+                                  <HoverCardTrigger>
+                                    <Info className=" h-3" />
+                                  </HoverCardTrigger>
+                                  <HoverCardContent>
+                                    {sizes.map((size: any) => (
+                                      <div key={size.id}>
+                                        <div>
+                                          {size.paper_size} - ${size.price}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                          <p>{size.inches}</p>
+                                          <p>{size.millimeters}</p>
+                                          <p>
+                                            Created on:{" "}
+                                            {new Date(
+                                              size.created_on
+                                            ).toLocaleDateString()}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </HoverCardContent>
+                                </HoverCard>
+                              </FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value.toString()}
@@ -712,11 +739,15 @@ export function EditProductForm(props: {
                                       value={size.id.toString()}
                                       key={size.id}
                                     >
-                                      {size.size} - {size.orientation}
-                                      <span className="text-muted-foreground">
-                                        {" "}
-                                        (+${size.additionalPrice})
-                                      </span>
+                                      <div>
+                                        <div>
+                                          {size.paper_size} - {size.centimeters}
+                                        </div>
+                                        <span className="text-muted-foreground">
+                                          {" "}
+                                          (${size.price})
+                                        </span>
+                                      </div>
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -751,11 +782,7 @@ export function EditProductForm(props: {
                                       value={paper.id.toString()}
                                       key={paper.id}
                                     >
-                                      {paper.name} - {paper.type}
-                                      <span className="text-muted-foreground">
-                                        {" "}
-                                        (+${paper.additionalPrice})
-                                      </span>
+                                      {paper.name}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

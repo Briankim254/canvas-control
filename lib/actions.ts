@@ -12,6 +12,7 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
     console.log(loginData);
     const response = await fetch(`${process.env.BASE_URL}/auth/login`, {
       method: "POST",
+      credentials: "include",
       body: JSON.stringify(loginData),
       headers: {
         "Content-Type": "application/json",

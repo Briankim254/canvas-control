@@ -10,7 +10,7 @@ import { columns } from "./columns";
 import { EditProductForm } from "./edit-product-form";
 
 async function getData(id: string) {
-  const data = await fetch(`${process.env.BASE_URL}/products/${id}`).then((res) => res.json());
+  const data = await fetch(`${process.env.BASE_URL}/products/product/${id}`).then((res) => res.json());
   console.log(data);
   return data;
 }

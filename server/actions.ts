@@ -10,20 +10,12 @@ import { CustomerFormSchema } from "@/app/admin/customers/create/create-customer
 import { ProductFormSchema } from "@/app/admin/products/create/create-product-form";
 import { CustomerFormValues } from "@/app/admin/customers/customer/[id]/edit-customer-form";
 import { error } from "console";
+import { getSession } from "@/auth";
 
-// export const getUsers = async (): Promise<User[]> => {
-//   const users = await prisma.user.findMany();
-//   return users;
-// };
-
-// export const getUser = async (id: string) => {
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       id: id,
-//     },
-//   });
-//   return user;
-// };
+const UserData = async () => {
+  const user = await getSession();
+  return user;
+};
 
 export const createUser = async (data: any) => {
   const res = await fetch(`${process.env.BASE_URL}/auth/register`, {
@@ -104,13 +96,18 @@ export const getCountries = async () => {
 };
 
 export const createArtist = async (data: artistFormSchema) => {
-  const artist = fetch(`${process.env.BASE_URL}/artists`, {
+  const session = await getSession();
+  const user = session.user;
+  const artist = await fetch(`${process.env.BASE_URL}/artists`, {
     method: "POST",
     headers: {
+      Authorization: `Bearer ${user.token}`,
       "Content-Type": "application/json",
     },
+
     body: JSON.stringify(data),
   });
+  console.log(artist);
   revalidatePath("/admin/artists");
   redirect("/admin/artists");
 };
@@ -188,12 +185,21 @@ export const deleteCustomer = async (id: string) => {
 };
 
 export const CreateProduct = async (data: FormData) => {
+  const session = await getSession();
+  const user = session.user;
+  console.log(data);
   const product = await fetch(`${process.env.BASE_URL}/products/add`, {
     method: "POST",
     body: data,
-  }).then((res) => res.json());
-
-  if (product.message !== "success") {
+    credentials: "include",
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  }).then((res) => {
+    return res.json();
+  });
+  console.log(product);
+  if (product.message != "success") {
     throw new Error("Failed to create product");
   }
 

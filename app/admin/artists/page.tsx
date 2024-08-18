@@ -16,7 +16,6 @@ async function getData() {
   const res = await fetch(`${process.env.BASE_URL}/artists`).then((res) =>
     res.json()
   );
-  console.log(res);
   if (res.message !== "success") {
     toast.error("Failed to fetch data");
     return [];

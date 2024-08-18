@@ -39,11 +39,6 @@ const ArtistFormSchema = z.object({
 });
 
 export type artistFormSchema = z.infer<typeof ArtistFormSchema>;
-type Country = {
-  country: string;
-  region: string;
-};
-
 export function CreateArtistForm() {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,17 +58,9 @@ export function CreateArtistForm() {
   async function onSubmit(values: z.infer<typeof ArtistFormSchema>) {
     setIsLoading(true);
     try {
-      toast.promise(
-        createArtist(values).then((data) => {
-          return data;
-        }),
-        {
-          loading: "Loading...",
-          description: "Creating new artist",
-          success: (data) => "Artist created successfully.",
-          error: "Error",
-        }
-      );
+      createArtist(values).then((data) => {
+        return data;
+      });
     } catch (error) {
       console.error(error);
       toast.error("Failed to create artist.");

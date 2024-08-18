@@ -27,6 +27,7 @@ export async function login(data: any) {
     lname: data.lName,
     role: data.role,
     phone: data.phone,
+    token: data.token
   };
 
   // Create the session that expires in 1 day

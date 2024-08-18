@@ -79,11 +79,15 @@ export const columns: ColumnDef<any>[] = [
     header: "Default Paper",
   },
   {
-    accessorKey: "price",
-    header: "Price",
+    accessorKey: "defaultSize",
+    header: "Default Size",
+  },
+  {
+    accessorKey: "basePrice",
+    header: "Base Price",
     cell: ({ row }) => {
       const product = row.original;
-      return <div>${product.price}</div>;
+      return <div>${product.basePrice}</div>;
     },
   },
   {

@@ -1,4 +1,4 @@
-import { PlusCircle } from "lucide-react";
+import { GalleryVertical, PlusCircle, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -43,6 +43,14 @@ export default async function Products() {
             </TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
+            <Link href="/admin/products/tags" className="">
+              <Button size="sm" className="h-8 gap-1 ">
+                <Settings2 className="h-3.5 w-3.5" />
+                <span className="sm:whitespace-nowrap hidden sm:block">
+                  Manage Tags
+                </span>
+              </Button>
+            </Link>
             <Link href="/admin/products/create" className="">
               <Button size="sm" className="h-8 gap-1 ">
                 <PlusCircle className="h-3.5 w-3.5" />
