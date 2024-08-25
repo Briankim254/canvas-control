@@ -1,12 +1,10 @@
 import { Separator } from "@/components/ui/separator";
-import { AccountForm } from "./account-form";
+import { FramePriceForm } from "./frame-price-form";
 import { toast } from "sonner";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -16,15 +14,24 @@ import { Frame } from "lucide-react";
 import Image from "next/image";
 
 export default async function SettingsAccountPage() {
-  const frames = await fetch(
+  const frames = await fetch(`${process.env.BASE_URL}/products/frames`).then(
+    (res) => res.json()
+  );
+
+  const frameSizes = await fetch(`${process.env.BASE_URL}/products/sizes`).then(
+    (res) => res.json()
+  );
+
+  const framesPrice = await fetch(
     `${process.env.BASE_URL}/products/frame-prices`
   ).then((res) => res.json());
-  console.log(frames);
-  if (frames.message !== "success") {
-    toast.error("Failed to fetch frames");
-    const frames = [];
+  if (framesPrice.message !== "success") {
+    toast.error("Failed to fetch frame prices");
+    const framesPrice = [];
   }
-  const data = frames.data;
+  const frameData = frames.data;
+  const frameSizeData = frameSizes.data;
+  const data = framesPrice.data;
   return (
     <div className="space-y-6">
       <div>
@@ -45,14 +52,14 @@ export default async function SettingsAccountPage() {
                   </span>
                 </Button>
               </SheetTrigger>
-              <SheetContent>
+              <SheetContent className="overflow-y-auto">
                 <SheetHeader>
-                  <SheetTitle>Add Frame</SheetTitle>
+                  <SheetTitle>Add Frame Price</SheetTitle>
                   <SheetDescription>
-                    Fill out the form below to add a new frame.
+                    Fill out the form below to add a new frame price.
                   </SheetDescription>
                 </SheetHeader>
-                <AccountForm />
+                <FramePriceForm frames={frameData} frameSizes={frameSizeData} />
               </SheetContent>
             </Sheet>
           </div>
@@ -70,11 +77,14 @@ export default async function SettingsAccountPage() {
               width="200"
               key={data.id}
             />
-            <h1 className="mx-auto mb-8 font-semibold leading-none tracking-tighter" key={data.id}>
+            <h1
+              className="mx-auto mb-8 font-semibold leading-none tracking-tighter"
+              key={data.id}
+            >
               {data.frameName}
             </h1>
             <p className="text-sm text-muted-foreground" key={data.id}>
-              $ {data.price} - {data.sizeName}
+              Ksh {data.price} - {data.sizeName}
             </p>
           </div>
         ))}

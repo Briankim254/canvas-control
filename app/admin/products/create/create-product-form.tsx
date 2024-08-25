@@ -58,6 +58,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 20; // 20mb
 const ACCEPTED_FILE_TYPES = [
@@ -132,6 +133,7 @@ export function CreateProductForm(props: {
       stock: 0,
     },
   });
+
   const fileRef = form.register("image");
 
   async function onSubmit(values: z.infer<typeof ProductFormSchema>) {
@@ -152,23 +154,18 @@ export function CreateProductForm(props: {
     if (values.image.length > 0) {
       data.append("image", values.image[0]);
     }
+    console.log(values.image[0]);
     setIsLoading(true);
-    try {
-      const res: any = await CreateProduct(data);
-      if (res.error) {
-        setIsLoading(false);
-        toast.error(res.error);
-        return;
-      }
-
+    const res: any = await CreateProduct(data);
+    if (res?.error) {
       setIsLoading(false);
-      toast.success("Product created successfully");
-      form.reset;
-    } catch (error) {
-      setIsLoading(false);
-      toast.error("An error occurred while creating product");
-      console.error(error);
+      toast.error(res.error);
+      return;
     }
+    setIsLoading(false);
+    toast.success("Product created successfully");
+    form.reset;
+    // window.location.href = "/admin/products";
   }
   return (
     <Form {...form}>
@@ -301,7 +298,7 @@ export function CreateProductForm(props: {
                             />
                           </FormControl>
                           <FormDescription>
-                            The price should be in USD.
+                            The price should be in Ksh.
                           </FormDescription>
                           <FormMessage />
                         </FormItem>

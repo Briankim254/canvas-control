@@ -43,14 +43,6 @@ const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
           <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
             <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
               <HeaderSheet />
-              <Breadcrumb className="hidden md:flex">
-                <BreadcrumbList>
-                  <BreadcrumbPage>
-                    <Link href="#">Admin</Link>
-                  </BreadcrumbPage>
-                  <BreadcrumbSeparator />
-                </BreadcrumbList>          
-              </Breadcrumb>
               <div className="relative ml-auto flex-1 md:grow-0">
                 <SearchCommandDialog user={user} />
               </div>

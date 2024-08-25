@@ -1,17 +1,107 @@
-import { Separator } from "@/components/ui/separator"
-import { DisplayForm } from "./display-form"
+import { Separator } from "@/components/ui/separator";
+import { PaperPriceForm } from "./paper-price-form";
+import { toast } from "sonner";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Frame } from "lucide-react";
 
-export default function SettingsDisplayPage() {
+export default async function SettingsDisplayPage() {
+  const paperSizes = await fetch(`${process.env.BASE_URL}/products/sizes`).then(
+    (res) => res.json()
+  );
+  const paper = await fetch(`${process.env.BASE_URL}/products/paper`).then(
+    (res) => res.json()
+  );
+  const paperPrices = await fetch(
+    `${process.env.BASE_URL}/products/paper-prices`
+  ).then((res) => res.json());
+  if (paperPrices.message !== "success") {
+    toast.error("Failed to fetch paper");
+    const paper = [];
+  }
+  const data = paperPrices.data;
+  const sizeData = paperSizes.data;
+  const paperData = paper.data;
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Display</h3>
-        <p className="text-sm text-muted-foreground">
-          Turn items on or off to control what&apos;s displayed in the app.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-medium">Paper Prices</h3>
+          <p className="text-sm text-muted-foreground">
+            Customize the paper prices for your store.
+          </p>
+        </div>
+        <div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button size="sm" className="h-8 gap-1 ">
+                <Frame className="h-3.5 w-3.5" />
+                <span className="sm:whitespace-nowrap hidden sm:block">
+                  Add Frame Price
+                </span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Add Frame</SheetTitle>
+                <SheetDescription>
+                  Fill out the form below to add a new frame.
+                </SheetDescription>
+              </SheetHeader>
+              <PaperPriceForm paper={paperData} printSizes={sizeData} />
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
       <Separator />
-      <DisplayForm />
+      {data.map((item: any) => (
+        <div key={item.id} className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium">{item.paperName}</h3>
+            <p className="text-sm text-muted-foreground">
+              {item.sizeName} - {item.price}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="sm" variant="outline" className="h-8">
+                  <span className="sm:whitespace-nowrap hidden sm:block">
+                    Edit
+                  </span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Edit Price</SheetTitle>
+                  <SheetDescription>
+                    Fill out the form below to edit the price.
+                  </SheetDescription>
+                </SheetHeader>
+                <PaperPriceForm
+                  pricing={item}
+                  paper={paperData}
+                  printSizes={sizeData}
+                />
+              </SheetContent>
+            </Sheet>
+            <Button size="sm" variant="outline" className="h-8">
+              <span className="sm:whitespace-nowrap hidden sm:block">
+                Delete
+              </span>
+            </Button>
+          </div>
+        </div>
+      ))}
     </div>
-  )
+  );
 }

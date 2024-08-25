@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
-import { ProfileForm } from "./frame-form";
+import { FrameForm } from "./frame-form";
 import { toast } from "sonner";
-import Image from "next/image"; // Import the Image component
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Frame } from "lucide-react";
 import {
@@ -14,12 +14,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { buttonVariants } from "@/components/ui/button";
 
 export default async function SettingsProfilePage() {
   const frames = await fetch(`${process.env.BASE_URL}/products/frames`).then(
     (res) => res.json()
   );
-  console.log(frames);
   if (frames.message !== "success") {
     toast.error("Failed to fetch frames");
     const frames = [];
@@ -36,22 +36,25 @@ export default async function SettingsProfilePage() {
         </div>
         <div>
           <Sheet>
-            <SheetTrigger asChild>
-              <Button size="sm" className="h-8 gap-1 ">
-                <Frame className="h-3.5 w-3.5" />
-                <span className="sm:whitespace-nowrap hidden sm:block">
-                  Add Frame
-                </span>
-              </Button>
+            <SheetTrigger
+              className={`${buttonVariants({
+                variant: "default",
+                size: "sm",
+              })} h-8 gap-1`}
+            >
+              <Frame className="h-3.5 w-3.5" />
+              <span className="sm:whitespace-nowrap hidden sm:block">
+                Add Frame
+              </span>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>Add Frame</SheetTitle>
                 <SheetDescription>
                   Fill out the form below to add a new frame.
                 </SheetDescription>
               </SheetHeader>
-              <ProfileForm />
+              <FrameForm />
             </SheetContent>
           </Sheet>
         </div>

@@ -17,7 +17,6 @@ async function getData() {
   const res = await fetch(`${process.env.BASE_URL}/products`).then((res) =>
     res.json()
   );
-  console.log(res);
   if (res.message !== "success") {
     toast.error("Failed to fetch products");
     const data = [];

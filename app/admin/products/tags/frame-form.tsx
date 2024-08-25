@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,59 +15,65 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { CreateFrame, CreateSize } from "@/server/actions";
+import { useState } from "react";
 
-const profileFormSchema = z.object({
+const sizeFormSchema = z.object({
   name: z.string().max(40).min(4),
-  image: z.string().max(160).min(4),
+  image: z.instanceof(FileList),
 });
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+export type sizeFormValues = z.infer<typeof sizeFormSchema>;
 
-const defaultValues: Partial<ProfileFormValues> = {
-  name: "I own a computer.",
-  image: "",
-};
-
-export function ProfileForm() {
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
-    defaultValues,
-    mode: "onChange",
+export function FrameForm(props: any) {
+  const form = useForm<sizeFormValues>({
+    resolver: zodResolver(sizeFormSchema),
+    defaultValues: {
+      name: props?.frame || "",
+    },
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    toast.message("You submitted the following values:", {
-      description: (
-        <pre className="mt-2  rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  const [isLoading, setIsLoading] = useState(false);
+  const fileRef = form.register("image");
+
+  async function onSubmit(values: sizeFormValues) {
+    const data = new FormData();
+    data.append("name", values.name);
+    if (values.image.length > 0) {
+      data.append("image", values.image[0]);
+    }
+    setIsLoading(true);
+    const res: any = await CreateFrame(data);
+    if (res?.error) {
+      setIsLoading(false);
+      toast.error(res.error);
+      return;
+    }
+
+    setIsLoading(false);
+    toast.success("Frame created successfully");
+    form.reset;
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="my-8 space-y-4">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Paper Size Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input
+                  className="w-full"
+                  placeholder="Frame name goes here"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
-                This is the name that will be displayed on the Frame.
+                The name should be descriptive and unique.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -78,30 +82,28 @@ export function ProfileForm() {
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Image</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Image</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
+                  <Input
+                    type="file"
+                    placeholder="Upload Product image"
+                    {...fileRef}
+                  />
                 </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                You can manage verified email addresses in your{" "}
-                <Link href="/examples/forms">email settings</Link>.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
+                <FormDescription>
+                  The image should be a high-quality image.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
-        <Button type="submit">Update profile</Button>
+        <Button type="submit" size="sm" disabled={isLoading}>
+          {isLoading ? "Creating Frame..." : "Create Frame"}
+        </Button>
       </form>
     </Form>
   );
