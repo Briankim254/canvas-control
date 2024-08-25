@@ -13,8 +13,8 @@ import { error } from "console";
 import { getSession } from "@/auth";
 import { framePriceFormValues } from "@/app/admin/products/tags/frame-price/frame-price-form";
 import { paperFormValues } from "@/app/admin/products/tags/print-paper/paper-form";
-import { sizeFormValues } from "@/app/admin/products/tags/frame-form";
 import { paperPriceFormValues } from "@/app/admin/products/tags/paper-price/paper-price-form";
+import { sizeFormValues } from "@/app/admin/products/tags/print-size/size-form";
 
 const UserData = async () => {
   const user = await getSession();

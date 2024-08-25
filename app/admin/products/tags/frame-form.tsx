@@ -24,10 +24,10 @@ const sizeFormSchema = z.object({
   image: z.instanceof(FileList),
 });
 
-export type sizeFormValues = z.infer<typeof sizeFormSchema>;
+export type frameFormValues = z.infer<typeof sizeFormSchema>;
 
 export function FrameForm(props: any) {
-  const form = useForm<sizeFormValues>({
+  const form = useForm<frameFormValues>({
     resolver: zodResolver(sizeFormSchema),
     defaultValues: {
       name: props?.frame || "",
@@ -37,7 +37,7 @@ export function FrameForm(props: any) {
   const [isLoading, setIsLoading] = useState(false);
   const fileRef = form.register("image");
 
-  async function onSubmit(values: sizeFormValues) {
+  async function onSubmit(values: frameFormValues) {
     const data = new FormData();
     data.append("name", values.name);
     if (values.image.length > 0) {
