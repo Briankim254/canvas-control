@@ -200,11 +200,15 @@ export const CreateProduct = async (data: FormData) => {
     },
   }).then((res) => {
     console.log(res);
+
+    if (!res.ok) {
+      return { error: `${res.statusText}` };
+    }
     return res.json();
   });
   console.log(product);
   if (product.message != "success") {
-    return { error: `${product.message}` };
+    return { error: `${product.message ? product.message : product.error}` };
   }
 
   revalidatePath("/admin/products");

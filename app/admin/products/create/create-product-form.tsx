@@ -165,7 +165,6 @@ export function CreateProductForm(props: {
     setIsLoading(false);
     toast.success("Product created successfully");
     form.reset;
-    // window.location.href = "/admin/products";
   }
   return (
     <Form {...form}>
