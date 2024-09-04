@@ -1,9 +1,11 @@
 import { cn } from "@/lib/utils";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Upload } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
+import { Button } from "./button";
+import Image from "next/image";
 
 const mainVariant = {
   initial: {
@@ -53,13 +55,16 @@ export const FileUpload = ({
 
   const { getRootProps, isDragActive } = useDropzone({
     multiple: false,
+    // maxFiles: 1,
+    // maxSize: 1 * 1024 * 1024, // 1MB
     noClick: true,
     accept: {
-      "image/*": [], // Accept only image file types
+      "image/*": [".jpg", ".jpeg", ".png", ".HEIC"],
     },
     onDrop: handleFileChange,
     onDropRejected: (error) => {
       console.log(error);
+      toast.error(`${error[0].errors[0].message}`);
     },
   });
 
@@ -113,7 +118,6 @@ export const FileUpload = ({
                       {(file.size / (1024 * 1024)).toFixed(2)} MB
                     </motion.p>
                   </div>
-
                   <div className="flex text-sm md:flex-row flex-col items-start md:items-center w-full mt-2 justify-between text-neutral-600 dark:text-neutral-400">
                     <motion.p
                       initial={{ opacity: 0 }}
@@ -123,7 +127,6 @@ export const FileUpload = ({
                     >
                       {file.type}
                     </motion.p>
-
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -173,6 +176,36 @@ export const FileUpload = ({
           </div>
         </div>
       </motion.div>
+      <div className="grid grid-cols-3 gap-2">
+        {files.length > 0 && (
+          <div className="relative " id={"image-preview"}>
+            <Image
+              alt="Product image"
+              className="aspect-square w-full rounded-md object-cover"
+              height="50"
+              src={
+                files.length > 0
+                  ? URL.createObjectURL(files[0])
+                  : "/placeholder.png"
+              }
+              width="50"
+            />
+            <Button
+              size="icon"
+              variant="outline"
+              className="absolute top-1 right-1 h-6 w-6  rounded-full p-1 hover:bg-red-500"
+              type="button"
+              onClick={() => {
+                setFiles([]);
+                onChange && onChange([]);
+              }}
+            >
+              <X className="h-3 w-3" />
+              <span className="sr-only">Delete image</span>
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

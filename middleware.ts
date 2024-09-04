@@ -1,32 +1,32 @@
-import { NextRequest, NextResponse  } from "next/server";
-import { updateSession } from "./auth";
+import { NextRequest, NextResponse } from "next/server";
+import { decrypt, getSession, updateSession } from "./auth";
 
 export async function middleware(request: NextRequest) {
   return await updateSession(request);
   // const token = request.cookies.get('token'); // Get the token from cookies
 
-  // // Skip appending the token for the login request
-  // if (request.nextUrl.pathname === '/api/login') {
-  //   return NextResponse.next();
-  // }
+  // const session = await getSession();
+  // const userToken = session?.user?.token;
 
-  // // Check if the request is a POST or GET request
-  // if (request.method === 'POST' || request.method === 'GET') {
-  //   // Clone the request headers to modify them
-  //   const headers = new Headers(request.headers);
+  // if (!userToken) return sessionResponse;
 
-  //   // Append the Authorization header with the Bearer token
-  //   if (token) {
-  //     headers.set('Authorization', `Bearer ${token}`);
-  //   }
+  // const requestHeaders = new Headers(request.headers);
+  // requestHeaders.set("Authorization", `Bearer ${userToken}`);
 
-  //   // Pass the modified request to the next middleware or the final handler
-  //   return NextResponse.next({
-  //     request: {
-  //       headers,
-  //     },
-  //   });
-  // }
+  // const modifiedRequest = new NextRequest(request.url, {
+  //   method: request.method,
+  //   headers: requestHeaders,
+  //   body: request.body, // Careful with body as it might be a stream.
+  //   cache: request.cache,
+  //   redirect: request.redirect,
+  //   referrer: request.referrer,
+  //   referrerPolicy: request.referrerPolicy,
+  //   mode: request.mode,
+  //   credentials: request.credentials,
+  //   integrity: request.integrity,
+  //   keepalive: request.keepalive,
+  //   signal: request.signal,
+  // });
 
   // // If it's not a POST or GET request, proceed without modification
   // return NextResponse.next();

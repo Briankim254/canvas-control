@@ -16,81 +16,59 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-// import { deleteProduct } from "@/server/actions";
 
 export const columns: ColumnDef<any>[] = [
   {
     enableHiding: false,
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    accessorKey: "customerName",
+    header: "Customer",
   },
   {
-    enableHiding: false,
-    accessorKey: "image",
-    header: "",
+    accessorKey: "shippingType",
+    header: "Type",
+    cell: ({ row }) => {
+      const order = row.original;
+      return <div>{order.shippingType}</div>;
+    },
+  },
+  {
+    accessorKey: "orderStatus",
+    header: "Status",
     cell: ({ row }) => {
       const product = row.original;
+
       return (
-        <Image
-          src={product.image || "/placeholder.png"}
-          alt={product.name}
-          className="aspect-square rounded-md object-cover"
-          height="64"
-          width="64"
-        />
+        <Badge
+          className="text-xs"
+          variant={product.orderStatus === "pending" ? "outline" : "secondary"}
+        >
+          {product.orderStatus}
+        </Badge>
       );
     },
   },
   {
-    enableHiding: false,
-    accessorKey: "title",
-    header: "Title",
-  },
-  {
-    accessorKey: "category",
-    header: "Category",
-  },
-  {
-    accessorKey: "defaultPaper",
-    header: "Default Paper",
-  },
-  {
-    accessorKey: "defaultSize",
-    header: "Default Size",
-  },
-  {
-    accessorKey: "basePrice",
-    header: "Base Price",
+    accessorKey: "orderTotal",
+    header: "Amount",
     cell: ({ row }) => {
-      const product = row.original;
-      return <div>Ksh {product.basePrice}</div>;
+      const order = row.original;
+      return <div>ksh {order.orderTotal}</div>;
     },
   },
-  {
-    accessorKey: "stock",
-    header: "Stock",
-  },
+  // {
+  //   accessorKey: "createdAt",
+  //   header: "Created At",
+  //   cell: ({ row }) => {
+  //     const date = new Date(row.original.createdAt);
+  //     const formatted =   date.toString();
+  //     return <div>{formatted}</div>;
+  //   },
+  // },
   {
     enableHiding: false,
     id: "actions",
     cell: ({ row }) => {
-      const product = row.original;
+      const order = row.original;
 
       return (
         <DropdownMenu>
@@ -102,7 +80,7 @@ export const columns: ColumnDef<any>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Link href={`/admin/products/product/${product.id}`}>
+            <Link href={`/admin/oders/order/${order.id}`}>
               <DropdownMenuItem>Edit</DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
@@ -126,7 +104,7 @@ export const columns: ColumnDef<any>[] = [
             </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() =>
-                toast.promise(navigator.clipboard.writeText(product.id), {
+                toast.promise(navigator.clipboard.writeText(order.id), {
                   loading: "Copying ID...",
                   success: "ID copied!",
                   error: "Failed to copy ID",
