@@ -16,8 +16,9 @@ import { paperFormValues } from "@/app/admin/products/tags/print-paper/paper-for
 import { paperPriceFormValues } from "@/app/admin/products/tags/paper-price/paper-price-form";
 import { sizeFormValues } from "@/app/admin/products/tags/print-size/size-form";
 
-const UserData = async () => {
+export const UserData = async () => {
   const user = await getSession();
+  console.log(user);
   return user;
 };
 
@@ -26,6 +27,7 @@ export const createUser = async (data: any) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${UserData().then((user) => user.user.token)}`,
     },
     body: JSON.stringify(data),
   });
@@ -207,7 +209,7 @@ export const CreateProduct = async (data: FormData) => {
     return res.json();
   });
   console.log(product);
-  if (product.message != "success") {
+  if (product.message != "success" || product.error) {
     return { error: `${product.message ? product.message : product.error}` };
   }
 
@@ -332,16 +334,25 @@ export const CreatePaperPrice = async (data: paperPriceFormValues) => {
 export const UpdateSize = async (id: string, data: sizeFormValues) => {
   const session = await getSession();
   const user = session.user;
-  const size = await fetch(`${process.env.BASE_URL}/products/sizes/${id}`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  }).then((res) => res.json());
-  if (size.message !== "success") {
-    return { error: `${size.message}` };
+  const size: any = await fetch(
+    `${process.env.BASE_URL}/products/sizes/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  ).then((res) => {
+    if (!res.ok) {
+      return { error: `${res.statusText}` };
+    }
+    return res.json();
+  });
+  console.log(size);
+  if (size.message != "success" || size.error) {
+    return { error: `${size.message ? size.message : size.error}` };
   }
   revalidatePath("/admin/products/tags/print-size");
   return size;

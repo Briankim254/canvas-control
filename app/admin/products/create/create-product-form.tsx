@@ -2,6 +2,7 @@
 "use client";
 
 import { z } from "zod";
+import { motion } from "framer-motion";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -20,7 +21,15 @@ import {
 } from "@/components/ui/hover-card";
 import { toast } from "sonner";
 import React, { useEffect, useState } from "react";
-import { Check, ChevronsUpDown, Info, Loader2 } from "lucide-react";
+import {
+  Check,
+  ChevronsUpDown,
+  Cross,
+  Delete,
+  Info,
+  Loader2,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, PlusCircle, Upload } from "lucide-react";
@@ -59,6 +68,7 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import { FileUpload } from "@/components/ui/singe-image-upload";
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 20; // 20mb
 const ACCEPTED_FILE_TYPES = [
@@ -70,7 +80,7 @@ const ACCEPTED_FILE_TYPES = [
 ];
 
 const ProductFormSchema = z.object({
-  image: typeof window === "undefined" ? z.any() : z.instanceof(FileList),
+  image: typeof window === "undefined" ? z.any() : z.instanceof(File),
   title: z.string().min(3),
   description: z
     .string()
@@ -134,8 +144,21 @@ export function CreateProductForm(props: {
     },
   });
 
-  const fileRef = form.register("image");
+  // const fileRef = form.register("image");
+  const [files, setFiles] = useState<File[]>([]);
 
+  const handleFileUpload = (uploadedFiles: File[]) => {
+    if (uploadedFiles.length > 0) {
+      const selectedFile = uploadedFiles[0];
+
+      if (selectedFile.type.startsWith("image/")) {
+        setFiles([selectedFile]);
+        form.setValue("image", selectedFile);
+      } else {
+        toast.error("Please upload an image file.");
+      }
+    }
+  };
   async function onSubmit(values: z.infer<typeof ProductFormSchema>) {
     const data = new FormData();
     data.append("title", values.title);
@@ -151,10 +174,10 @@ export function CreateProductForm(props: {
     data.append("defaultSize", values.defaultSize.toString());
     data.append("defaultPaper", values.defaultPaper);
     data.append("artist", values.artist);
-    if (values.image.length > 0) {
-      data.append("image", values.image[0]);
+    if (values.image) {
+      data.append("image", values.image);
     }
-    console.log(values.image[0]);
+    console.log(values.image);
     setIsLoading(true);
     const res: any = await CreateProduct(data);
     if (res?.error) {
@@ -165,12 +188,13 @@ export function CreateProductForm(props: {
     setIsLoading(false);
     toast.success("Product created successfully");
     form.reset;
+    setFiles([]); // clear the file input
   }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <main className="items-start gap-4 py-8 sm:px-6 sm:py-0 md:gap-8 overflow-auto max-w-4xl mx-auto ">
-          <div className=" grid max-w-[59rem] flex-1 auto-rows-max gap-4">
+        <main className="items-center gap-4 py-8 sm:px-6 sm:py-0 md:gap-8 overflow-auto max-w-6xl mx-auto ">
+          <div className=" grid max-w-6xl flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <Link href="/admin/products">
                 <Button variant="outline" size="icon" className="h-7 w-7">
@@ -248,81 +272,7 @@ export function CreateProductForm(props: {
                           )}
                         />
                       </div>
-                      <div>
-                        <FormField
-                          control={form.control}
-                          name="image"
-                          render={({ field }) => {
-                            return (
-                              <FormItem>
-                                <FormLabel>Image</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="file"
-                                    placeholder="Upload Product image"
-                                    {...fileRef}
-                                  />
-                                </FormControl>
-                                <FormDescription>
-                                  The image should be a high-quality image.
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-                <Card x-chunk="dashboard-07-chunk-1">
-                  <CardHeader>
-                    <CardTitle>Stock</CardTitle>
-                    <CardDescription>
-                      Add product price and stock count
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="basePrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Price</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Product price"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            The price should be in Ksh.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="stock"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stock Count</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Stock count"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            The number of items available for sale.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </CardContent>
                 </Card>
                 <Card>
@@ -509,6 +459,34 @@ export function CreateProductForm(props: {
                           )}
                         />
                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="overflow-hidden">
+                  <CardHeader>
+                    <CardTitle>Product Images</CardTitle>
+                    <CardDescription>Add images of the product</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-2">
+                      <FormField
+                        control={form.control}
+                        name="image"
+                        render={() => (
+                          <FormItem>
+                            <FormLabel>Image</FormLabel>
+                            <FormControl>
+                              <FileUpload
+                                onChange={handleFileUpload}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              The image should be a high-quality image.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -787,45 +765,54 @@ export function CreateProductForm(props: {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="overflow-hidden">
+                <Card x-chunk="dashboard-07-chunk-1">
                   <CardHeader>
-                    <CardTitle>Product Images</CardTitle>
-                    <CardDescription>Add images of the product</CardDescription>
+                    <CardTitle>Stock</CardTitle>
+                    <CardDescription>
+                      Add product price and stock count
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-2">
-                      <Image
-                        alt="Product image"
-                        className="aspect-square w-full rounded-md object-cover"
-                        height="300"
-                        src="/placeholder.png"
-                        width="300"
-                      />
-                      <div className="grid grid-cols-3 gap-2">
-                        <div>
-                          <Image
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="/placeholder.png"
-                            width="84"
-                          />
-                        </div>
-                        <div>
-                          <Image
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="/placeholder.png"
-                            width="84"
-                          />
-                        </div>
-                        <div className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                          <Upload className="h-4 w-4 text-muted-foreground" />
-                          <span className="sr-only">Upload</span>
-                        </div>
-                      </div>
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="basePrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="Product price"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            The price should be in Ksh.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="stock"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Stock Count</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="Stock count"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            The number of items available for sale.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </CardContent>
                 </Card>
               </div>
