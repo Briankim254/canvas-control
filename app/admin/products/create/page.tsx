@@ -6,10 +6,11 @@ import { getSession } from "@/auth";
 async function CreatArtist() {
   const session = await getSession();
   const user = session?.user;
-  const categories = await fetch(`${process.env.BASE_URL}/products/categories`,
+  const categories = await fetch(
+    `${process.env.BASE_URL}/products/categories`,
     {
       headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
+        Authorization: `Bearer ${user?.token}` || "",
       },
     }
   )
@@ -21,13 +22,11 @@ async function CreatArtist() {
       }));
       return categories;
     });
-  const artists = await fetch(`${process.env.BASE_URL}/artists`,
-    {
-      headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
-      },
-    }
-  )
+  const artists = await fetch(`${process.env.BASE_URL}/artists`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  })
     .then((res) => res.json())
     .then((res) => {
       const artists = res.data.map((artist: { id: any; name: any }) => ({
@@ -36,33 +35,29 @@ async function CreatArtist() {
       }));
       return artists;
     });
-  const paper = await fetch(`${process.env.BASE_URL}/products/paper`,
-    {
-      headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
-      },
-    }
-  )
+  const paper = await fetch(`${process.env.BASE_URL}/products/paper`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  })
     .then((res) => res.json())
     .then((res) => {
       return res.data;
     });
-  const sizes = await fetch(`${process.env.BASE_URL}/products/sizes`,
-    {
-      headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
-      },
-    })
+  const sizes = await fetch(`${process.env.BASE_URL}/products/sizes`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  })
     .then((res) => res.json())
     .then((res) => {
       return res.data;
     });
-  const frames = await fetch(`${process.env.BASE_URL}/products/frames`,
-    {
-      headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
-      },
-    })
+  const frames = await fetch(`${process.env.BASE_URL}/products/frames`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  })
     .then((res) => res.json())
     .then((res) => {
       return res.data;
@@ -71,7 +66,7 @@ async function CreatArtist() {
     `${process.env.BASE_URL}/products/tags?tag=subject-matter`,
     {
       headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
+        Authorization: `Bearer ${user?.token}` || "",
       },
     }
   )
@@ -79,12 +74,14 @@ async function CreatArtist() {
     .then((res) => {
       return res.data;
     });
-  const styles = await fetch(`${process.env.BASE_URL}/products/tags?tag=style`,
+  const styles = await fetch(
+    `${process.env.BASE_URL}/products/tags?tag=style`,
     {
       headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
+        Authorization: `Bearer ${user?.token}` || "",
       },
-    })
+    }
+  )
     .then((res) => res.json())
     .then((res) => {
       return res.data;
@@ -93,7 +90,7 @@ async function CreatArtist() {
     `${process.env.BASE_URL}/products/tags?tag=medium`,
     {
       headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
+        Authorization: `Bearer ${user?.token}` || "",
       },
     }
   )
@@ -105,7 +102,7 @@ async function CreatArtist() {
     `${process.env.BASE_URL}/products/tags?tag=color-palette`,
     {
       headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
+        Authorization: `Bearer ${user?.token}` || "",
       },
     }
   )
@@ -113,12 +110,14 @@ async function CreatArtist() {
     .then((res) => {
       return res.data;
     });
-  const themes = await fetch(`${process.env.BASE_URL}/products/tags?tag=theme`,
+  const themes = await fetch(
+    `${process.env.BASE_URL}/products/tags?tag=theme`,
     {
       headers: {
-        "Authorization": `Bearer ${user?.token}` || "",
+        Authorization: `Bearer ${user?.token}` || "",
       },
-    })
+    }
+  )
     .then((res) => res.json())
     .then((res) => {
       return res.data;

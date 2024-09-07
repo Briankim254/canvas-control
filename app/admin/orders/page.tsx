@@ -26,49 +26,46 @@ export default async function Orders() {
       return res.data;
     });
 
-  // const totalRevenueThisMonth = orders
-  //   .filter((order: any) => isThisMonth(parseISO(order.date)))
-  //   .reduce(
-  //     (total: any, order: any) => total + parseFloat(order.orderTotal),
-  //     0
-  //   );
+  console.log(orders);
+  const totalRevenueThisMonth = orders
+    .filter((order: any) => isThisMonth(parseISO(order.createdDate)))
+    .reduce(
+      (total: any, order: any) => total + parseFloat(order.orderTotal),
+      0
+    );
 
-  // const totalRevenueThisWeek = orders
-  //   .filter((order: any) => isThisWeek(parseISO(order.date)))
-  //   .reduce(
-  //     (total: any, order: any) => total + parseFloat(order.orderTotal),
-  //     0
-  //   );
+  const totalRevenueThisWeek = orders
+    .filter((order: any) => isThisWeek(parseISO(order.createdDate)))
+    .reduce(
+      (total: any, order: any) => total + parseFloat(order.orderTotal),
+      0
+    );
 
-  // const startOfPrevMonth = startOfMonth(subMonths(new Date(), 1));
-  // const endOfPrevMonth = endOfMonth(subMonths(new Date(), 1));
+  const startOfPrevMonth = startOfMonth(subMonths(new Date(), 1));
+  const endOfPrevMonth = endOfMonth(subMonths(new Date(), 1));
 
-  // const startOfPrevWeek = startOfWeek(subWeeks(new Date(), 1));
-  // const endOfPrevWeek = endOfWeek(subWeeks(new Date(), 1));
+  const startOfPrevWeek = startOfWeek(subWeeks(new Date(), 1));
+  const endOfPrevWeek = endOfWeek(subWeeks(new Date(), 1));
 
-  // const totalRevenuePrevMonth = orders
-  //   .filter((order: any) => {
-  //     const orderDate = parseISO(order.date);
-  //     return orderDate >= startOfPrevMonth && orderDate <= endOfPrevMonth;
-  //   })
-  //   .reduce(
-  //     (total: any, order: any) => total + parseFloat(order.orderTotal),
-  //     0
-  //   );
+  const totalRevenuePrevMonth = orders
+    .filter((order: any) => {
+      const orderDate = parseISO(order.createdDate);
+      return orderDate >= startOfPrevMonth && orderDate <= endOfPrevMonth;
+    })
+    .reduce(
+      (total: any, order: any) => total + parseFloat(order.orderTotal),
+      0
+    );
 
-  // const totalRevenuePrevWeek = orders
-  //   .filter((order: any) => {
-  //     const orderDate = parseISO(order.date);
-  //     return orderDate >= startOfPrevWeek && orderDate <= endOfPrevWeek;
-  //   })
-  //   .reduce(
-  //     (total: any, order: any) => total + parseFloat(order.orderTotal),
-  //     0
-  //   );
-  const totalRevenueThisMonth = 0;
-  const totalRevenueThisWeek = 0;
-  const totalRevenuePrevMonth = 0;
-  const totalRevenuePrevWeek = 0;
+  const totalRevenuePrevWeek = orders
+    .filter((order: any) => {
+      const orderDate = parseISO(order.createdDate);
+      return orderDate >= startOfPrevWeek && orderDate <= endOfPrevWeek;
+    })
+    .reduce(
+      (total: any, order: any) => total + parseFloat(order.orderTotal),
+      0
+    );
 
   return (
     <SubOrders

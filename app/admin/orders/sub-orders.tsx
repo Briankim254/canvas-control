@@ -43,9 +43,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSession } from "@/auth";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { m } from "framer-motion";
 
 export default function SubOrders({
   orders,
@@ -63,47 +64,70 @@ export default function SubOrders({
   totalRevenuePrevWeek: any;
 }) {
   const [orderDetails, setOrderDetails] = useState<any>(null);
+  const [orderItems, setOrderItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleFetchingOrderDetails = async (order: any) => {
-    try {
-      setLoading(true);
-      setOrderDetails(null);
-      const response = await fetch(
-        `https://adm-api.pixelsnpaint.art/api/orders/order/${order.orderId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}` || "",
-          },
+  const handleFetchingOrderDetails = useCallback(
+    async (order: any) => {
+      try {
+        setLoading(true);
+        setOrderDetails(null);
+        const orderResponse = await fetch(
+          `https://adm-api.pixelsnpaint.art/api/orders/order/${order.orderId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}` || "",
+            },
+          }
+        );
+        if (!orderResponse.ok) {
+          toast.error(
+            `Error fetching order details: ${orderResponse.statusText}`
+          );
+          setLoading(false);
         }
-      );
-      if (!response.ok) {
-        toast.error(`Error fetching order details: ${response.statusText}`);
+        const orderDetails = await orderResponse.json();
+        setOrderDetails(orderDetails.data);
+
+        const orderItemsResponse = await fetch(
+          `https://adm-api.pixelsnpaint.art/api/orders/order/${order.orderId}/items`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}` || "",
+            },
+          }
+        );
+        if (!orderItemsResponse.ok) {
+          toast.error(
+            `Error fetching order items: ${orderItemsResponse.statusText}`
+          );
+          setLoading(false);
+        }
+        const orderItems = await orderItemsResponse.json();
+        setOrderItems(orderItems.data);
+
         setLoading(false);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
       }
-      const orderDetails = await response.json();
-      setOrderDetails(orderDetails.data);
-      setLoading(false);
-      console.log(orderDetails);
-    } catch (error) {
-      console.error("Error fetching order details:", error);
-    }
-  };
+    },
+    [user?.token]
+  );
 
   useEffect(() => {
     if (orders.length > 0) {
       handleFetchingOrderDetails(orders[0]);
     }
-  }, [orders]);
+  }, [orders, handleFetchingOrderDetails]);
 
   // get percentage increase/decrease from previous month and week and format to 2 decimal places and add a + or - sign
   const percentageIncreasePrevMonth = (
-    (totalRevenueThisMonth - totalRevenuePrevMonth) /
-    totalRevenuePrevMonth
+    ((totalRevenueThisMonth - totalRevenuePrevMonth) / totalRevenuePrevMonth) *
+    100
   ).toFixed(2);
   const percentageIncreasePrevWeek = (
-    (totalRevenueThisWeek - totalRevenuePrevWeek) /
-    totalRevenuePrevWeek
+    ((totalRevenueThisWeek - totalRevenuePrevWeek) / totalRevenuePrevWeek) *
+    100
   ).toFixed(2);
 
   const formattedPercentageIncreasePrevMonth =
@@ -120,18 +144,16 @@ export default function SubOrders({
         }${percentageIncreasePrevWeek}%`
       : "N/A";
 
-  const absoluteChangePrevMonth = totalRevenueThisMonth - totalRevenuePrevMonth;
-  const absoluteChangePrevWeek = totalRevenueThisWeek - totalRevenuePrevWeek;
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
           <Card className="sm:col-span-2" x-chunk="dashboard-05-chunk-0">
             <CardHeader className="pb-3">
               <CardTitle>Your Orders</CardTitle>
               <CardDescription className="max-w-lg text-balance leading-relaxed">
                 Introducing Our Dynamic Orders Dashboard for Seamless Management
-                and Insightful Analysis.
+                and Insightful Analysis. Click on an order to see more
               </CardDescription>
             </CardHeader>
           </Card>
@@ -147,14 +169,16 @@ export default function SubOrders({
                 {formattedPercentageIncreasePrevWeek} from last week
               </div>
             </CardContent>
-            <CardFooter>
-              <Progress
-                value={Math.abs(absoluteChangePrevWeek)}
-                aria-label={`${
-                  absoluteChangePrevWeek > 0 ? "+" : ""
-                }${absoluteChangePrevWeek} change`}
-              />
-            </CardFooter>
+            {Math.abs(Number(percentageIncreasePrevWeek)) > 100 ? null : (
+              <CardFooter>
+                <Progress
+                  value={Math.abs(Number(percentageIncreasePrevWeek))}
+                  aria-label={`${
+                    Number(percentageIncreasePrevWeek) > 0 ? "+" : ""
+                  }${Number(percentageIncreasePrevWeek)} change`}
+                />
+              </CardFooter>
+            )}
           </Card>
           <Card x-chunk="dashboard-05-chunk-2">
             <CardHeader className="pb-2">
@@ -168,14 +192,16 @@ export default function SubOrders({
                 {formattedPercentageIncreasePrevMonth} from last month
               </div>
             </CardContent>
-            <CardFooter>
-              <Progress
-                value={Math.abs(absoluteChangePrevMonth)}
-                aria-label={`${
-                  absoluteChangePrevMonth > 0 ? "+" : ""
-                }${absoluteChangePrevMonth} change`}
-              />
-            </CardFooter>
+            {Math.abs(Number(percentageIncreasePrevMonth)) > 100 ? null : (
+              <CardFooter>
+                <Progress
+                  value={Math.abs(Number(percentageIncreasePrevMonth))}
+                  aria-label={`${
+                    Number(percentageIncreasePrevMonth) > 0 ? "+" : ""
+                  }${Number(percentageIncreasePrevMonth)} change`}
+                />
+              </CardFooter>
+            )}
           </Card>
         </div>
         <div className="flex items-center">
@@ -200,10 +226,10 @@ export default function SubOrders({
                 <DropdownMenuCheckboxItem>Refunded</DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
+            {/* <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only">Export</span>
-            </Button>
+            </Button> */}
           </div>
         </div>
         <Card x-chunk="dashboard-05-chunk-3">
@@ -250,7 +276,10 @@ export default function SubOrders({
                     <span className="sr-only">Copy Order ID</span>
                   </Button>
                 </CardTitle>
-                <CardDescription>Date: --- </CardDescription>
+                <CardDescription>
+                  Date:
+                  {new Date(orderDetails.createdDate).toDateString()}
+                </CardDescription>
               </div>
               <div className="ml-auto flex items-center gap-1">
                 <Badge variant="outline" className="h-8 gap-1">
@@ -259,7 +288,7 @@ export default function SubOrders({
                     {orderDetails.orderStatus}
                   </span>
                 </Badge>
-                <DropdownMenu>
+                {/* <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button size="icon" variant="outline" className="h-8 w-8">
                       <MoreVertical className="h-3.5 w-3.5" />
@@ -272,25 +301,31 @@ export default function SubOrders({
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>Trash</DropdownMenuItem>
                   </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
               </div>
             </CardHeader>
             <CardContent className="p-6 text-sm">
               <div className="grid gap-3">
                 <div className="font-semibold">Order Details</div>
                 <ul className="grid gap-3">
-                  <li className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      Glimmer Lamps x <span>2</span>
-                    </span>
-                    <span>$250.00</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      Aqua Filters x <span>1</span>
-                    </span>
-                    <span>$49.00</span>
-                  </li>
+                  {orderItems && orderItems.length > 0 ? (
+                    orderItems.map((item: any, index: number) => (
+                      <li key={index}>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                           {++ index}. {" "} {item.productName} x <span>{item.quantity}</span>
+                          </span>
+                          <span>Ksh {item.price}</span>
+                        </div>
+                        <span className="text-muted-foreground text-xs">
+                          Size: {item.size}, Paper: {item.paper}, Frame:{" "}
+                          {item.frame}
+                        </span>
+                      </li>
+                    ))
+                  ) : (
+                    <p>No items available</p>
+                  )}
                 </ul>
                 <Separator className="my-2" />
                 <ul className="grid gap-3">
@@ -355,29 +390,40 @@ export default function SubOrders({
                 <div className="font-semibold">Customer Information</div>
                 <dl className="grid gap-3">
                   <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Customer</dt>
+                    <dt className="text-muted-foreground">Name</dt>
                     <dd>{orderDetails.customer.customerName}</dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-muted-foreground">Email</dt>
                     <dd>
-                      <a href="mailto:"> --- </a>
+                      <a href="mailto:">
+                        {orderDetails.customer.customerEmail}
+                      </a>
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
                     <dt className="text-muted-foreground">Phone</dt>
                     <dd>
-                      <a href="tel:">--- </a>
+                      <a href="tel:">{orderDetails.customer.customerPhone}</a>
                     </dd>
                   </div>
                 </dl>
               </div>
-              {orderDetails.payment && (
-                <>
-                  <Separator className="my-4" />
-                  <div className="grid gap-3">
-                    <div className="font-semibold">Payment Information</div>
-                    <dl className="grid gap-3">
+
+              <Separator className="my-4" />
+              <div className="grid gap-3">
+                <div className="font-semibold">Payment Information</div>
+                <dl className="grid gap-3">
+                  <div className="flex items-center justify-between">
+                    <dt className="text-muted-foreground">Payment Status</dt>
+                    <dd>
+                      <Badge variant="default">
+                        {orderDetails.paymentStatus}
+                      </Badge>
+                    </dd>
+                  </div>
+                  {orderDetails.payment && (
+                    <>
                       <div className="flex items-center justify-between">
                         <dt className="flex items-center gap-1 text-muted-foreground">
                           <CreditCard className="h-4 w-4" />
@@ -397,14 +443,17 @@ export default function SubOrders({
                           ).toDateString()}
                         </>
                       </div>
-                    </dl>
-                  </div>
-                </>
-              )}
+                    </>
+                  )}
+                </dl>
+              </div>
             </CardContent>
             <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
               <div className="text-xs text-muted-foreground">
-                Updated <time dateTime="2023-11-23">--</time>
+                Updated{" "}
+                <time dateTime="2023-11-23">
+                  {new Date(orderDetails.updatedDate).toDateString()}
+                </time>
               </div>
             </CardFooter>
           </Card>

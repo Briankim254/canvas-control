@@ -24,6 +24,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
   const session = await getSession();
@@ -56,13 +57,12 @@ const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
                         variant="outline"
                         className="overflow-hidden rounded-full"
                       >
-                        <Image
-                          src={"/placeholder-user.jpg"}
-                          width={36}
-                          height={36}
-                          alt="Avatar"
-                          className="overflow-hidden rounded-full"
-                        />
+                        <Avatar className="h-9 w-9">
+                          <AvatarFallback>
+                            {user.fname.charAt(0).toUpperCase() +
+                              user.lname.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
