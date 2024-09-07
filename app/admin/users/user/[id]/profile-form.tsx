@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "../../../../../components/ui/textarea";
 import { updateUser } from "@/server/actions";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -25,7 +25,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../../../../../components/ui/select";
 import Link from "next/link";
 
 const formSchema = z.object({

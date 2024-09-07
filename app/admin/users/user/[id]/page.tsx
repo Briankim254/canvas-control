@@ -1,13 +1,18 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import { ProfileForm } from "@/components/profile-form";
+import { ProfileForm } from "@/app/admin/users/user/[id]/profile-form";
 import { Badge } from "@/components/ui/badge";
+import { getSession } from "@/auth";
 
 async function getData(id: string) {
-  const res = await fetch(`${process.env.BASE_URL}/users/${id}`).then((res) =>
-    res.json()
-  );
+  const session = await getSession();
+  const user = session?.user;
+  const res = await fetch(`${process.env.BASE_URL}/users/${id}`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  }).then((res) => res.json());
   if (res.message !== "success") {
     return null;
   }

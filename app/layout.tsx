@@ -13,6 +13,7 @@ import { getSession } from "@/auth";
 const fontSans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

@@ -10,11 +10,16 @@ import {
 } from "@/components/ui/card";
 import { DataTable } from "@/app/admin/products/data-table";
 import { columns } from "@/app/admin/products/columns";
+import { getSession } from "@/auth";
 
 async function getData(id: string) {
-  const res = await fetch(`${process.env.BASE_URL}/artists/${id}`).then((res) =>
-    res.json()
-  );
+  const session = await getSession();
+  const user = session?.user;
+  const res = await fetch(`${process.env.BASE_URL}/artists/${id}`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  }).then((res) => res.json());
   return res;
 }
 

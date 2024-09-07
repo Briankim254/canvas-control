@@ -12,11 +12,14 @@ import Link from "next/link";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { toast } from "sonner";
+import { getSession } from "@/auth";
 
-async function getData() {
-  const res = await fetch(`${process.env.BASE_URL}/products`).then((res) =>
-    res.json()
-  );
+async function getData(token: any) {
+  const res = await fetch(`${process.env.BASE_URL}/products`, {
+    headers: {
+      Authorization: `Bearer ${token}` || "",
+    },
+  }).then((res) => res.json());
   if (res.message !== "success") {
     toast.error("Failed to fetch products");
     const data = [];
@@ -25,7 +28,9 @@ async function getData() {
   return data;
 }
 export default async function Products() {
-  const data = await getData();
+  const session = await getSession();
+  const user = session?.user;
+  const data = await getData(user.token);
   const published = data;
   const draft = data;
   const archived = data;

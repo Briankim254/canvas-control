@@ -10,12 +10,15 @@ import { DataTable } from "./data-table";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { getSession } from "@/auth";
 
 async function getData() {
+  const session = await getSession();
+  const user = session?.user;
   const res = await fetch(`${process.env.BASE_URL}/users`, {
-    // headers: {
-    //   Authorization: `Bearer ${process.env.ADMIN_TOKEN}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
   });
   console.log(res);
   if (!res.ok) {

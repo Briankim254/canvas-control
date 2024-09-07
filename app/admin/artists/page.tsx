@@ -11,11 +11,16 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { getSession } from "@/auth";
 
 async function getData() {
-  const res = await fetch(`${process.env.BASE_URL}/artists`).then((res) =>
-    res.json()
-  );
+  const session = await getSession();
+  const user = session?.user;
+  const res = await fetch(`${process.env.BASE_URL}/artists`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  }).then((res) => res.json());
   if (res.message !== "success") {
     toast.error("Failed to fetch data");
     return [];
