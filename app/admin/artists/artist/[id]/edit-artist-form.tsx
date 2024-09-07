@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Loader2, Phone } from "lucide-react";
-import { getCountries, updateArtist } from "@/server/actions";
+import { updateArtist } from "@/server/actions";
 
 const ArtistFormSchema = z.object({
   firstName: z.string().min(2).max(50),
