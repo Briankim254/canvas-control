@@ -78,7 +78,7 @@ export default function SubOrders({
             headers: {
               Authorization: `Bearer ${user?.token}` || "",
             },
-            mode: "same-origin",
+            mode: "no-cors",
           }
         );
         if (!orderResponse.ok) {
