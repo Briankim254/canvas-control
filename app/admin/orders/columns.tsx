@@ -74,7 +74,7 @@ export const columns: ColumnDef<any>[] = [
     header: "Created At",
     cell: ({ row }) => {
       const date = new Date(row.original.createdDate).toDateString();
-      const formatted =   date.toString();
+      const formatted = date.toString();
       return <div>{formatted}</div>;
     },
   },
@@ -94,31 +94,9 @@ export const columns: ColumnDef<any>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Link href={`/admin/oders/order/${order.id}`}>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-            </Link>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                toast.warning("Not implemented yet");
-              }}
-            >
-              Archive
-            </DropdownMenuItem>
-            {/* <DropdownMenuItem
-              onClick={() => {
-                toast.promise(deleteProduct(product.id), {
-                  loading: "Deleting product...",
-                  success: "Product deleted!",
-                  error: "Failed to delete product",
-                });
-              }}
-            >
-              Delete
-            </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() =>
-                toast.promise(navigator.clipboard.writeText(order.id), {
+                toast.promise(navigator.clipboard.writeText(order.orderId), {
                   loading: "Copying ID...",
                   success: "ID copied!",
                   error: "Failed to copy ID",
