@@ -26,6 +26,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useTheme } from "next-themes";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -39,7 +42,7 @@ const formSchema = z.object({
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
   const { pending } = useFormStatus();
-
+  const { resolvedTheme } = useTheme();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,7 +61,20 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex flex-col gap-1 items-center justify-center h-screen">
+      <Link href="/">
+        <Image
+          src={
+            resolvedTheme?.includes("dark")
+              ? "/logo-white.png"
+              : "/logo-black.png"
+          }
+          alt="Image"
+          width="190"
+          height="190"
+          className="h-full w-full object-cover object-center"
+        />
+      </Link>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>

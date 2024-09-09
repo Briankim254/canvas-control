@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { useTheme } from "next-themes";
+import { useTheme, } from "next-themes";
 
 const appearanceFormSchema = z.object({
   theme: z.enum(["light", "dark", "system"], {

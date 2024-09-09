@@ -3,8 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/react";
-
-import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -17,8 +15,8 @@ const fontSans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Canvas Control",
-  description: "A pixels & paint Product",
+  title: "Pixels & Paint Admin",
+  description: "A pixels & paint admin dashboard.",
 };
 
 export default async function RootLayout({

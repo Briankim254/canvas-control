@@ -50,6 +50,9 @@ import { m } from "framer-motion";
 
 export default function SubOrders({
   orders,
+  ordersThisMonth,
+  ordersThisWeek,
+  ordersThisYear,
   user,
   totalRevenueThisMonth,
   totalRevenueThisWeek,
@@ -62,6 +65,9 @@ export default function SubOrders({
   totalRevenueThisWeek: any;
   totalRevenuePrevMonth: any;
   totalRevenuePrevWeek: any;
+  ordersThisMonth: any;
+  ordersThisWeek: any;
+  ordersThisYear: any;
 }) {
   const [orderDetails, setOrderDetails] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<any[]>([]);
@@ -233,19 +239,52 @@ export default function SubOrders({
             </Button> */}
           </div>
         </div>
-        <Card x-chunk="dashboard-05-chunk-3">
-          <CardHeader className="px-7">
-            <CardTitle>Orders</CardTitle>
-            <CardDescription>Recent orders from your store.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <DataTable
-              data={orders}
-              columns={columns}
-              onRowClick={handleFetchingOrderDetails}
-            />
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="All">
+          <div className="flex items-center my-2">
+            <TabsList>
+              <TabsTrigger value="All">All</TabsTrigger>
+              <TabsTrigger value="week">Week</TabsTrigger>
+              <TabsTrigger value="month">Month</TabsTrigger>
+              <TabsTrigger value="year">Year</TabsTrigger>
+            </TabsList>
+          </div>
+          <Card>
+            <CardHeader className="px-7">
+              <CardTitle>Orders</CardTitle>
+              <CardDescription>Recent orders from your store.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TabsContent value="All">
+                <DataTable
+                  data={orders}
+                  columns={columns}
+                  onRowClick={handleFetchingOrderDetails}
+                />
+              </TabsContent>
+              <TabsContent value="week">
+                <DataTable
+                  data={ordersThisWeek}
+                  columns={columns}
+                  onRowClick={handleFetchingOrderDetails}
+                />
+              </TabsContent>
+              <TabsContent value="month">
+                <DataTable
+                  data={ordersThisMonth}
+                  columns={columns}
+                  onRowClick={handleFetchingOrderDetails}
+                />
+              </TabsContent>
+              <TabsContent value="year">
+                <DataTable
+                  data={ordersThisYear}
+                  columns={columns}
+                  onRowClick={handleFetchingOrderDetails}
+                />
+              </TabsContent>
+            </CardContent>
+          </Card>
+        </Tabs>
       </div>
       <div>
         {orderDetails ? (
@@ -314,7 +353,8 @@ export default function SubOrders({
                       <li key={index}>
                         <div className="flex items-center justify-between">
                           <span className="text-muted-foreground">
-                           {++ index}. {" "} {item.productName} x <span>{item.quantity}</span>
+                            {++index}. {item.productName} x{" "}
+                            <span>{item.quantity}</span>
                           </span>
                           <span>Ksh {item.price}</span>
                         </div>

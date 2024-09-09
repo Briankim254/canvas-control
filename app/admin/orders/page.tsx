@@ -10,7 +10,9 @@ import {
   endOfMonth,
   startOfWeek,
   endOfWeek,
+  isThisYear,
 } from "date-fns";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function Orders() {
   const session = await getSession();
@@ -26,7 +28,6 @@ export default async function Orders() {
       return res.data;
     });
 
-  console.log(orders);
   const totalRevenueThisMonth = orders
     .filter((order: any) => isThisMonth(parseISO(order.createdDate)))
     .reduce(
@@ -67,9 +68,21 @@ export default async function Orders() {
       0
     );
 
+  const ordersThisMonth = orders.filter((order: any) =>
+    isThisMonth(parseISO(order.createdDate))
+  );
+  const ordersThisWeek = orders.filter((order: any) =>
+    isThisWeek(parseISO(order.createdDate))
+  );
+  const ordersThisYear = orders.filter((order: any) =>
+    isThisYear(parseISO(order.createdDate))
+  );
   return (
     <SubOrders
       orders={orders}
+      ordersThisMonth={ordersThisMonth}
+      ordersThisWeek={ordersThisWeek}
+      ordersThisYear={ordersThisYear}
       user={user}
       totalRevenueThisMonth={totalRevenueThisMonth}
       totalRevenueThisWeek={totalRevenueThisWeek}
