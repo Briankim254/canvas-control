@@ -10,6 +10,7 @@ import {
   ListFilter,
   Loader,
   MoreVertical,
+  MousePointerClick,
   PackageSearch,
   Truck,
 } from "lucide-react";
@@ -160,7 +161,8 @@ export default function SubOrders({
               <CardTitle>Your Orders</CardTitle>
               <CardDescription className="max-w-lg text-balance leading-relaxed">
                 Introducing Our Dynamic Orders Dashboard for Seamless Management
-                and Insightful Analysis. Click on an order to see more
+                and Insightful Analysis.Click on an order to see more.{" "}
+                <MousePointerClick />
               </CardDescription>
             </CardHeader>
           </Card>
@@ -212,35 +214,15 @@ export default function SubOrders({
           </Card>
         </div>
         <div className="flex items-center">
-          <div className="ml-auto flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 gap-1 text-sm"
-                >
-                  <ListFilter className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only">Filter</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem>All</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Fulfilled</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Declined</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Refunded</DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {/* <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
+          {/* <div className="ml-auto flex items-center gap-2">
+            <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only">Export</span>
-            </Button> */}
-          </div>
+            </Button>
+          </div> */}
         </div>
         <Tabs defaultValue="All">
-          <div className="flex items-center my-2">
+          <div className="flex items-center my-1">
             <TabsList>
               <TabsTrigger value="All">All</TabsTrigger>
               <TabsTrigger value="week">Week</TabsTrigger>

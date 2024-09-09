@@ -16,6 +16,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
+import { statuses } from "./data";
+import { DataTableColumnHeader } from "./data-table-column-header";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -33,18 +35,30 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "orderStatus",
-    header: "Status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
     cell: ({ row }) => {
-      const product = row.original;
+      const status1 = row.original;
+      const status = statuses.find(
+        (status) => status.value === row.getValue("orderStatus")
+      );
+
+      if (!status) {
+        return null;
+      }
 
       return (
-        <Badge
-          className="text-xs"
-          variant={product.orderStatus === "pending" ? "outline" : "secondary"}
-        >
-          {product.orderStatus}
-        </Badge>
+        <div className="flex w-[100px] items-center">
+          {status.icon && (
+            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+          )}
+          <span>{status.label}</span>
+        </div>
       );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
     },
   },
   {
@@ -55,15 +69,15 @@ export const columns: ColumnDef<any>[] = [
       return <div>ksh {order.orderTotal}</div>;
     },
   },
-  // {
-  //   accessorKey: "createdAt",
-  //   header: "Created At",
-  //   cell: ({ row }) => {
-  //     const date = new Date(row.original.createdAt);
-  //     const formatted =   date.toString();
-  //     return <div>{formatted}</div>;
-  //   },
-  // },
+  {
+    accessorKey: "createdDate",
+    header: "Created At",
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdDate).toDateString();
+      const formatted =   date.toString();
+      return <div>{formatted}</div>;
+    },
+  },
   {
     enableHiding: false,
     id: "actions",
