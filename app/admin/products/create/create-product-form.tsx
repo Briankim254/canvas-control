@@ -70,15 +70,6 @@ import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { FileUpload } from "@/components/ui/singe-image-upload";
 
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 20; // 20mb
-const ACCEPTED_FILE_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/jpg",
-  "image/gif",
-  "image/webp",
-];
-
 const ProductFormSchema = z.object({
   image: typeof window === "undefined" ? z.any() : z.instanceof(File),
   title: z.string().min(3),
@@ -144,7 +135,6 @@ export function CreateProductForm(props: {
     },
   });
 
-  // const fileRef = form.register("image");
   const [files, setFiles] = useState<File[]>([]);
 
   const handleFileUpload = (uploadedFiles: File[]) => {
@@ -177,7 +167,6 @@ export function CreateProductForm(props: {
     if (values.image) {
       data.append("image", values.image);
     }
-    console.log(values.image);
     setIsLoading(true);
     const res: any = await CreateProduct(data);
     if (res?.error) {
@@ -188,7 +177,7 @@ export function CreateProductForm(props: {
     setIsLoading(false);
     toast.success("Product created successfully");
     form.reset;
-    setFiles([]); // clear the file input
+    setFiles([]); 
   }
   return (
     <Form {...form}>

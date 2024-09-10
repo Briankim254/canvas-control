@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { z } from "zod";
+import { string, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -54,24 +54,20 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 20; // 20mb
-const ACCEPTED_FILE_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/jpg",
-  "image/gif",
-  "image/webp",
-];
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { FileUpload } from "@/components/ui/singe-image-upload";
 
 const ProductFormSchema = z.object({
-  image: typeof window === "undefined" ? z.any() : z.instanceof(FileList),
+  image: typeof window === "undefined" ? z.any() : z.instanceof(File),
   title: z.string().min(3),
   description: z
     .string()
     .min(3, "Description is too short")
-    .max(150, "Description is too long"),
+    .max(200, "Description is too long"),
   artist: z.string().nonempty(),
   category: z.coerce.number(),
   subject: z.string().nonempty(),
@@ -80,7 +76,7 @@ const ProductFormSchema = z.object({
   palette: z.string().nonempty(),
   theme: z.string().nonempty(),
   defaultSize: z.coerce.number(),
-  defaultPaper: z.string().nonempty(),
+  defaultPaper: z.coerce.number(),
   basePrice: z.string().nonempty(),
   stock: z.coerce.number(),
 });
@@ -130,10 +126,24 @@ export function EditProductForm(props: {
       basePrice: product.basePrice || "",
       stock: product.stock || "",
       category: product.categoryId || "",
-      image: [],
+      image:  product.image || "",
     },
   });
-  const fileRef = form.register("image");
+
+  const [files, setFiles] = useState<File[]>([]);
+
+  const handleFileUpload = (uploadedFiles: File[]) => {
+    if (uploadedFiles.length > 0) {
+      const selectedFile = uploadedFiles[0];
+
+      if (selectedFile.type.startsWith("image/")) {
+        setFiles([selectedFile]);
+        form.setValue("image", selectedFile);
+      } else {
+        toast.error("Please upload an image file.");
+      }
+    }
+  };
 
   async function onSubmit(values: z.infer<typeof ProductFormSchema>) {
     const data = new FormData();
@@ -142,40 +152,34 @@ export function EditProductForm(props: {
     data.append("price", values.basePrice);
     data.append("stock", values.stock.toString());
     data.append("category", values.category.toString());
-    data.append("subject", values.subject);
-    data.append("medium", values.medium);
-    data.append("style", values.style);
-    data.append("palette", values.palette);
-    data.append("theme", values.theme);
+    data.append("subject", values.subject.toString());
+    data.append("medium", values.medium.toString());
+    data.append("style", values.style.toString());
+    data.append("palette", values.palette.toString());
+    data.append("theme", values.theme.toString());
     data.append("defaultSize", values.defaultSize.toString());
-    data.append("defaultPaper", values.defaultPaper);
+    data.append("defaultPaper", values.defaultPaper.toString());
     data.append("artist", values.artist);
-    if (values.image.length > 0) {
-      data.append("image", values.image[0]);
+    if (values.image) {
+      data.append("image", values.image);
     }
     setIsLoading(true);
-    try {
-      const res: any = await EditProduct(product.id, data);
-      if (res.error) {
-        setIsLoading(false);
-        toast.error(res.error);
-        return;
-      }
-
+    const res: any = await EditProduct(product.id, data);
+    if (res?.error) {
       setIsLoading(false);
-      toast.success("Product created successfully");
-      form.reset;
-    } catch (error) {
-      setIsLoading(false);
-      toast.error("An error occurred while creating product");
-      console.error(error);
+      toast.error(res.error);
+      return;
     }
+    setIsLoading(false);
+    toast.success("Product created successfully");
+    form.reset;
+    setFiles([]);
   }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <main className="items-start gap-4 py-8 sm:px-6 sm:py-0 md:gap-8 overflow-auto max-w-4xl mx-auto ">
-          <div className=" grid max-w-[59rem] flex-1 auto-rows-max gap-4">
+        <main className="items-center gap-4 py-8 sm:px-6 sm:py-0 md:gap-8 overflow-auto max-w-6xl mx-auto ">
+          <div className=" grid max-w-6xl flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <Link href="/admin/products">
                 <Button variant="outline" size="icon" className="h-7 w-7">
@@ -186,7 +190,10 @@ export function EditProductForm(props: {
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
                 {product.title}
               </h1>
-              <Badge variant="outline" className="ml-auto sm:ml-0 bg-green-600 border-white">
+              <Badge
+                variant="outline"
+                className="ml-auto sm:ml-0 bg-green-600 border-white"
+              >
                 In stock
               </Badge>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
@@ -259,81 +266,7 @@ export function EditProductForm(props: {
                           )}
                         />
                       </div>
-                      <div>
-                        <FormField
-                          control={form.control}
-                          name="image"
-                          render={({ field }) => {
-                            return (
-                              <FormItem>
-                                <FormLabel>Image</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="file"
-                                    placeholder="Upload Product image"
-                                    {...fileRef}
-                                  />
-                                </FormControl>
-                                <FormDescription>
-                                  The image should be a high-quality image.
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-                <Card x-chunk="dashboard-07-chunk-1">
-                  <CardHeader>
-                    <CardTitle>Stock</CardTitle>
-                    <CardDescription>
-                      Add product price and stock count
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="basePrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Price</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Product price"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            The price should be in USD.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="stock"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stock Count</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Stock count"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            The number of items available for sale.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </CardContent>
                 </Card>
                 <Card>
@@ -389,7 +322,7 @@ export function EditProductForm(props: {
                               <FormLabel>Medium</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                defaultValue={field.value.toString()}
                               >
                                 <FormControl>
                                   <SelectTrigger>
@@ -424,7 +357,7 @@ export function EditProductForm(props: {
                               <FormLabel>Style</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                defaultValue={field.value.toString()}
                               >
                                 <FormControl>
                                   <SelectTrigger>
@@ -459,7 +392,7 @@ export function EditProductForm(props: {
                               <FormLabel>Palette</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                defaultValue={field.value.toString()}
                               >
                                 <FormControl>
                                   <SelectTrigger>
@@ -494,7 +427,7 @@ export function EditProductForm(props: {
                               <FormLabel>Theme</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                defaultValue={field.value.toString()}
                               >
                                 <FormControl>
                                   <SelectTrigger>
@@ -520,6 +453,32 @@ export function EditProductForm(props: {
                           )}
                         />
                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="overflow-hidden">
+                  <CardHeader>
+                    <CardTitle>Product Images</CardTitle>
+                    <CardDescription>Add images of the product</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-2">
+                      <FormField
+                        control={form.control}
+                        name="image"
+                        render={() => (
+                          <FormItem>
+                            <FormLabel>Image</FormLabel>
+                            <FormControl>
+                              <FileUpload onChange={handleFileUpload} />
+                            </FormControl>
+                            <FormDescription>
+                              The image should be a high-quality image.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -798,10 +757,62 @@ export function EditProductForm(props: {
                     </div>
                   </CardContent>
                 </Card>
+                <Card x-chunk="dashboard-07-chunk-1">
+                  <CardHeader>
+                    <CardTitle>Stock</CardTitle>
+                    <CardDescription>
+                      Add product price and stock count
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <FormField
+                      control={form.control}
+                      name="basePrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="Product price"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            The price should be in Ksh.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="stock"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Stock Count</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="Stock count"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            The number of items available for sale.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
                 <Card className="overflow-hidden">
                   <CardHeader>
                     <CardTitle>Product Images</CardTitle>
-                    <CardDescription>Add images of the product</CardDescription>
+                    <CardDescription>
+                      Initial uploaded product image
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-2">
@@ -812,30 +823,6 @@ export function EditProductForm(props: {
                         src={product.image || "/placeholder.png"}
                         width="300"
                       />
-                      <div className="grid grid-cols-3 gap-2">
-                        <div>
-                          <Image
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="/placeholder.png"
-                            width="84"
-                          />
-                        </div>
-                        <div>
-                          <Image
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="/placeholder.png"
-                            width="84"
-                          />
-                        </div>
-                        <div className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                          <Upload className="h-4 w-4 text-muted-foreground" />
-                          <span className="sr-only">Upload</span>
-                        </div>
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -848,7 +835,7 @@ export function EditProductForm(props: {
                 </Button>
               </Link>
               <Button type="submit" size="sm">
-                Save Product
+                Update Product
               </Button>
             </div>
           </div>

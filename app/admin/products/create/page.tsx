@@ -6,6 +6,7 @@ import { getSession } from "@/auth";
 async function CreatArtist() {
   const session = await getSession();
   const user = session?.user;
+  console.log(user.token);
   const categories = await fetch(
     `${process.env.BASE_URL}/products/categories`,
     {
@@ -122,6 +123,10 @@ async function CreatArtist() {
     .then((res) => {
       return res.data;
     });
+
+  // if (!categories || !artists || !paper || !sizes || !frames) {
+  //   return <div>Product not found</div>;
+  // }
   return (
     <>
       <CreateProductForm
