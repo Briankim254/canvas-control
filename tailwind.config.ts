@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss"
 const { fontFamily } = require("tailwindcss/defaultTheme")
 
-
 const config = {
   darkMode: ["class"],
   content: [
@@ -9,7 +8,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
     container: {
@@ -29,8 +28,20 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
+        /* Updated Primary Theme Colors */
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          50: '#f0e6f4',
+          100: '#dbc2e6',
+          200: '#c49ad6',
+          300: '#ad73c5',
+          400: '#9c58b8',
+          500: '#8b41ab',
+          600: '#7e3ca4',
+          700: '#6c369b',
+          800: '#5c3191',
+          900: '#3f287e',
+          DEFAULT: '#8b41ab',
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
