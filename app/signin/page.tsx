@@ -61,8 +61,80 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col gap-1 items-center justify-center h-screen">
-      <Link href="/">
+    <div className="w-full lg:grid lg:min-full lg:grid-cols-2 xl:min-h-full">
+      <div className="flex flex-col gap-1 items-center justify-center h-screen">
+        <Link href="/">
+          <Image
+            src={
+              resolvedTheme?.includes("dark")
+                ? "/logo-white.png"
+                : "/logo-black.png"
+            }
+            alt="Image"
+            width="200"
+            height="200"
+            className="h-full w-full object-cover object-center lg:hidden"
+          />
+        </Link>
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle className="text-2xl">Login</CardTitle>
+            <CardDescription>
+              Enter your work email below to login.
+            </CardDescription>
+          </CardHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <CardContent className="grid gap-4">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="me@example.com" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Enter your email below to login to your account.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <div className="flex flex-col flex-grow">
+                  <LoginButton />
+                  {errorMessage && (
+                    <FormMessage className="text-red-500">
+                      {errorMessage.toString()}
+                    </FormMessage>
+                  )}
+                </div>
+              </CardFooter>
+            </form>
+          </Form>
+        </Card>
+      </div>
+      <div className="hidden bg-muted lg:block">
         <Image
           src={
             resolvedTheme?.includes("dark")
@@ -70,68 +142,11 @@ export default function LoginForm() {
               : "/logo-black.png"
           }
           alt="Image"
-          width="190"
-          height="190"
+          width="1920"
+          height="1080"
           className="h-full w-full object-cover object-center"
         />
-      </Link>
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your work email below to login.
-          </CardDescription>
-        </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <CardContent className="grid gap-4">
-              <div className="grid gap-2">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="me@example.com" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Enter your email below to login to your account.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="grid gap-2">
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <div className="flex flex-col flex-grow">
-                <LoginButton />
-                {errorMessage && (
-                  <FormMessage className="text-red-500">
-                    {errorMessage.toString()}
-                  </FormMessage>
-                )}
-              </div>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
+      </div>
     </div>
   );
 }
