@@ -13,9 +13,18 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Frame } from "lucide-react";
+import { getSession } from "@/auth";
 
 export default async function SettingsNotificationsPage() {
-  const size = await fetch(`${process.env.BASE_URL}/products/sizes`).then(
+  const session = await getSession();
+  const user = session?.user;
+  const size = await fetch(`${process.env.BASE_URL}/products/sizes`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
+  ).then(
     (res) => res.json()
   );
   if (size.message != "success") {

@@ -12,18 +12,38 @@ import {
 import { Button } from "@/components/ui/button";
 import { Frame } from "lucide-react";
 import Image from "next/image";
+import { getSession } from "@/auth";
 
 export default async function SettingsAccountPage() {
-  const frames = await fetch(`${process.env.BASE_URL}/products/frames`).then(
+  const session = await getSession();
+  const user = session?.user;
+  const frames = await fetch(`${process.env.BASE_URL}/products/frames`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
+  ).then(
     (res) => res.json()
   );
 
-  const frameSizes = await fetch(`${process.env.BASE_URL}/products/sizes`).then(
+  const frameSizes = await fetch(`${process.env.BASE_URL}/products/sizes`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
+  ).then(
     (res) => res.json()
   );
 
   const framesPrice = await fetch(
-    `${process.env.BASE_URL}/products/frame-prices`
+    `${process.env.BASE_URL}/products/frame-prices`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
   ).then((res) => res.json());
   if (framesPrice.message !== "success") {
     toast.error("Failed to fetch frame prices");

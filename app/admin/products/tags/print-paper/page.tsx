@@ -13,9 +13,18 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Frame } from "lucide-react";
+import { getSession } from "@/auth";
 
 export default async function SettingsAppearancePage() {
-  const paper = await fetch(`${process.env.BASE_URL}/products/paper`).then(
+  const session = await getSession();
+  const user = session?.user;
+  const paper = await fetch(`${process.env.BASE_URL}/products/paper`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
+  ).then(
     (res) => res.json()
   );
   if (paper.message !== "success") {

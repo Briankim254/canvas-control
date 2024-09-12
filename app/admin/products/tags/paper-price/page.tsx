@@ -13,9 +13,18 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Frame } from "lucide-react";
+import { getSession } from "@/auth";
 
 export default async function SettingsDisplayPage() {
-  const paperSizes = await fetch(`${process.env.BASE_URL}/products/sizes`).then(
+  const session = await getSession();
+  const user = session?.user;
+  const paperSizes = await fetch(`${process.env.BASE_URL}/products/sizes`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
+  ).then(
     (res) => res.json()
   );
   const paper = await fetch(`${process.env.BASE_URL}/products/paper`).then(

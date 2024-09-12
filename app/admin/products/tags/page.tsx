@@ -15,9 +15,18 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { buttonVariants } from "@/components/ui/button";
+import { getSession } from "@/auth";
 
 export default async function SettingsProfilePage() {
-  const frames = await fetch(`${process.env.BASE_URL}/products/frames`).then(
+  const session = await getSession();
+  const user = session?.user;
+  const frames = await fetch(`${process.env.BASE_URL}/products/frames`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
+  ).then(
     (res) => res.json()
   );
   if (frames.message !== "success") {
