@@ -15,14 +15,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 
-// export type Artist = {
-//   id: string;
-//   name: string;
-//   phone: string;
-//   country: string;
-//   city: string;
-//   email: string;
-// };
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -79,39 +71,27 @@ export const columns: ColumnDef<any>[] = [
     header: "City",
   },
   {
-    accessorKey: "verificationStatus",
-    header: "Verified",
+    accessorKey: "onboardingStatus",
+    header: "Onboarding",
     cell: ({ row }) => {
-      const verified = row.original.verified;
+      const status = row.original.onboardingStatus;
+      console.log(status);
       return (
-        <Badge variant={verified ? "default" : "destructive"}>
-          {verified ? "Verified" : "Not Verified"}
+        <Badge variant={"outline"}>
+          {status.charAt(0).toUpperCase() + status.slice(1)}
         </Badge>
       );
     },
   },
   // {
-  //   accessorKey: "signupStatus",
-  //   header: "Signup Status",
+  //   accessorKey: "createdAt",
+  //   header: "Registed On",
   //   cell: ({ row }) => {
-  //     const incomplete = row.original.incomplete;
-  //     console.log(incomplete);
-  //     return (
-  //       <Badge variant={"outline"}>
-  //         {incomplete == "incomplete" ? "Incomplete" : "Complete"}
-  //       </Badge>
-  //     );
+  //     const date = new Date(row.original.createdDate);
+  //     const formatted = date.toDateString();
+  //     return <div>{formatted}</div>;
   //   },
   // },
-  {
-    accessorKey: "createdAt",
-    header: "Registed On",
-    cell: ({ row }) => {
-      const date = new Date(row.original.createdDate);
-      const formatted = date.toDateString();
-      return <div>{formatted}</div>;
-    },
-  },
   {
     enableHiding: false,
     id: "actions",

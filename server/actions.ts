@@ -9,6 +9,7 @@ import { framePriceFormValues } from "@/app/admin/products/tags/frame-price/fram
 import { paperFormValues } from "@/app/admin/products/tags/print-paper/paper-form";
 import { paperPriceFormValues } from "@/app/admin/products/tags/paper-price/paper-price-form";
 import { sizeFormValues } from "@/app/admin/products/tags/print-size/size-form";
+import { toast } from "sonner";
 
 export const UserData = async () => {
   const user = await getSession();
@@ -20,7 +21,7 @@ export const createUser = async (data: any) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
     body: JSON.stringify(data),
   });
@@ -40,7 +41,7 @@ export const updateUser = async (id: string, data: any): Promise<any> => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
     body: JSON.stringify(data),
   });
@@ -51,15 +52,18 @@ export const createArtist = async (data: artistFormSchema) => {
   const artist = await fetch(`${process.env.BASE_URL}/artists`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
       "Content-Type": "application/json",
     },
-
     body: JSON.stringify(data),
   });
+  if (!artist.ok) {
+    return { error: `${artist.statusText}` };
+  }
   console.log(artist);
+  const res = await artist.json();
   revalidatePath("/admin/artists");
-  redirect("/admin/artists");
+  return res;
 };
 
 export const updateArtist = async (id: string, formData: artistFormSchema) => {
@@ -67,7 +71,7 @@ export const updateArtist = async (id: string, formData: artistFormSchema) => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
     body: JSON.stringify(formData),
   });
@@ -80,7 +84,7 @@ export const updateCustomer = async (data: CustomerFormValues, id: string) => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
     body: JSON.stringify(data),
   }).then((res) => res.json());
@@ -97,7 +101,7 @@ export const deleteCustomer = async (id: string) => {
   const customer = await fetch(`${process.env.BASE_URL}/customers/${id}`, {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
   }).then((res) => res.json());
 
@@ -115,7 +119,7 @@ export const CreateProduct = async (data: FormData) => {
     method: "POST",
     body: data,
     headers: {
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
   }).then((res) => {
     console.log(res);
@@ -138,7 +142,7 @@ export const EditProduct = async (id: string, data: FormData) => {
   const product = await fetch(`${process.env.BASE_URL}/products/${id}`, {
     method: "PATCH",
     headers: {
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
     body: data,
   }).then((res) => res.json());
@@ -156,19 +160,21 @@ export const CreateFrame = async (data: FormData) => {
   const frame = await fetch(`${process.env.BASE_URL}/products/frames`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
       "Content-Type": "application/json",
     },
     body: data,
-  })
-    .then((response) => response.text())
-    .then((result) => console.log(result))
-    .catch((error) => console.error(error));
-  // if (frame.message !== "success") {
-  //   return { error: `${frame.message}` };
-  // }
-  // revalidatePath("/admin/products/tags");
-  // return frame;
+  }).then((res) => {
+    if (!res.ok) {
+      return { error: `${res.statusText}` };
+    }
+    return res.json();
+  });
+  if (frame.error || frame.message !== "success") {
+    return { error: `${frame.message ? frame.message : frame.error}` };
+  }
+  revalidatePath("/admin/products/tags");
+  return frame;
 };
 
 export const CreateFramePrice = async (data: framePriceFormValues) => {
@@ -177,7 +183,7 @@ export const CreateFramePrice = async (data: framePriceFormValues) => {
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+        Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
@@ -194,7 +200,7 @@ export const CreatePaper = async (data: paperFormValues) => {
   const paper = await fetch(`${process.env.BASE_URL}/products/paper`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
@@ -210,7 +216,7 @@ export const CreateSize = async (data: sizeFormValues) => {
   const size = await fetch(`${process.env.BASE_URL}/products/sizes`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
@@ -228,7 +234,7 @@ export const CreatePaperPrice = async (data: paperPriceFormValues) => {
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+        Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
@@ -247,7 +253,7 @@ export const UpdateSize = async (id: string, data: sizeFormValues) => {
     {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${UserData().then((user) => user.token)}`,
+        Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),

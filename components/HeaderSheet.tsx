@@ -10,6 +10,7 @@ import {
   Package,
   Palette,
   PanelLeft,
+  Settings,
   ShoppingCart,
   Users2,
 } from "lucide-react";
@@ -119,7 +120,7 @@ function HeaderSheet() {
                     : ""
                 }`}
             >
-              <LineChart className="h-5 w-5" />
+              <Settings className="h-5 w-5" />
               Settings
             </Link>
           </nav>

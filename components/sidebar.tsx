@@ -12,141 +12,86 @@ import {
   Palette,
   Settings,
   ShoppingCart,
+  Users,
   Users2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Badge } from "./ui/badge";
 
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-        <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-          <Link
-            href="#"
-            className="transition-all group-hover:scale-110 hover:-rotate-45 hover:hue-rotate-90  group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-          >
-            <PaintBucket className="h-5 w-5 " />
-            <span className="sr-only">Pixels & Paint</span>
-          </Link>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/admin/dashboard"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/admin/dashboard"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
-              >
-                <Home className="h-5 w-5" />
-                <span className="sr-only">Dashboard</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Dashboard</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/admin/orders"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/admin/orders"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                <span className="sr-only">Orders</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Orders</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/admin/products"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/admin/products"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
-              >
-                <Package className="h-5 w-5" />
-                <span className="sr-only">Products</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Products</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/admin/customers"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/admin/customers"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
-              >
-                <HandCoins className="h-5 w-5" />
-                <span className="sr-only">Customers</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Customers</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/admin/users"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/admin/users"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
-              >
-                <Users2 className="h-5 w-5" />
-                <span className="sr-only">Users</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Users</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/admin/artists"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/admin/artists"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
-              >
-                <Palette className="h-5 w-5" />
-                <span className="sr-only">Artists</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Artists</TooltipContent>
-          </Tooltip>
-        </nav>
-        <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="/admin/settings"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg  text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${
-                  pathname === "/admin/settings"
-                    ? "text-accent-foreground bg-accent"
-                    : ""
-                }`}
-              >
-                <Settings className="h-5 w-5" />
-                <span className="sr-only">Settings</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Settings</TooltipContent>
-          </Tooltip>
-        </nav>
-      </aside>
+      <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+        <Link
+          href="/admin/dashboard"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+            pathname === "/admin/dashboard" ? "bg-muted text-primary" : ""
+          }`}
+        >
+          <Home className="h-4 w-4" />
+          Dashboard
+        </Link>
+        <Link
+          href="/admin/orders"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+            pathname === "/admin/orders" ? "bg-muted text-primary" : ""
+          }`}
+        >
+          <ShoppingCart className="h-4 w-4" />
+          Orders
+        </Link>
+        <Link
+          href="/admin/products"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+            pathname === "/admin/products"
+              ? "bg-muted text-primary"
+              : "text-muted-foreground hover:text-primary"
+          }`}
+        >
+          <Package className="h-4 w-4" />
+          Products
+        </Link>
+        <Link
+          href="/admin/customers"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+            pathname === "/admin/customers" ? "bg-muted text-primary" : ""
+          }`}
+        >
+          <Users className="h-4 w-4" />
+          Customers
+        </Link>
+        <Link
+          href="/admin/users"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+            pathname === "/admin/users" ? "bg-muted text-primary" : ""
+          }`}
+        >
+          <Users2 className="h-4 w-4" />
+          Users
+        </Link>
+        <Link
+          href="/admin/artists"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+            pathname === "/admin/artists" ? "bg-muted text-primary" : ""
+          }`}
+        >
+          <Palette className="h-4 w-4" />
+          Artists
+        </Link>
+        <Link
+          href="/admin/settings"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+            pathname === "/admin/settings" ? "bg-muted text-primary" : ""
+          }`}
+        >
+          <Settings className="h-4 w-4" />
+          Settings
+        </Link>
+        
+      </nav>
     </>
   );
 }

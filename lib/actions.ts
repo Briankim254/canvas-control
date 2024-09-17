@@ -2,7 +2,7 @@
 
 import { login } from "@/auth";
 
-export async function authenticate(_currentState: unknown, formData: FormData) {
+export async function authenticate(formData: FormData) {
   try {
     const loginData = {
       email: formData.get("email"),
@@ -23,19 +23,18 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
 
     console.log(res);
     if (res.message !== "success") {
-      throw new Error("CredentialsSignin");
+      return { error: res.message || "Something went wrong." };
     }
     await login(res.data);
-    return { authenticated: true };
+    return { success: true };
   } catch (error: any) {
     if (error) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Invalid credentials.";
+          return { error: "Invalid credentials." };
         default:
-          return "Something went wrong.";
+          return { error: error.message || "Something went wrong." };
       }
     }
-    throw error;
   }
 }

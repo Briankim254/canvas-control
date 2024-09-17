@@ -57,16 +57,21 @@ export function CreateArtistForm() {
 
   async function onSubmit(values: z.infer<typeof ArtistFormSchema>) {
     setIsLoading(true);
-    try {
-      createArtist(values).then((data) => {
-        return data;
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create artist.");
-    } finally {
-      setIsLoading(false);
+
+    const res = await createArtist(values);
+    if (res.error) {
+      toast.error(res.error);
+    } else if (res.message == "success") {
+      toast.success("Artist created successfully");
+      form.reset();
+      setTimeout(() => {
+        window.location.href = "/admin/artists";
+      }, 3000);
     }
+    else {
+      toast.error("Failed to create artist");
+    }
+    setIsLoading(false);
   }
   return (
     <>

@@ -27,16 +27,33 @@ export default async function SettingsDisplayPage() {
   ).then(
     (res) => res.json()
   );
-  const paper = await fetch(`${process.env.BASE_URL}/products/paper`).then(
+  const paper = await fetch(`${process.env.BASE_URL}/products/paper`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
+  ).then(
     (res) => res.json()
   );
   const paperPrices = await fetch(
-    `${process.env.BASE_URL}/products/paper-prices`
+    `${process.env.BASE_URL}/products/paper-prices`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}` || "",
+      },
+    }
   ).then((res) => res.json());
   if (paperPrices.message !== "success") {
-    toast.error("Failed to fetch paper");
+    const paperPrices = [];
+  }
+  if (paperSizes.message !== "success") {
+    const paperSizes = [];
+  }
+  if (paper.message !== "success") {
     const paper = [];
   }
+
   const data = paperPrices.data;
   const sizeData = paperSizes.data;
   const paperData = paper.data;

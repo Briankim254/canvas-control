@@ -31,6 +31,7 @@ import {
 import { getSession } from "@/auth";
 import { toast } from "sonner";
 import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
 
 export default async function Dashboard() {
   const session = await getSession();
@@ -195,27 +196,30 @@ export default async function Dashboard() {
           <CardContent className="grid gap-8">
             {recentArtists ? (
               recentArtists?.map((artist: any) => (
-                <div className="flex items-center gap-4" key={artist.id}>
-                  <Avatar className="hidden h-9 w-9 sm:flex">
-                    <AvatarFallback>
-                      {artist.firstName.charAt(0).toUpperCase() +
-                        artist.lastName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid gap-1">
-                    <p className="text-sm font-medium leading-none">
-                      {artist?.name}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {artist.email}
-                    </p>
+                <>
+                  <Separator className="my-1" />
+                  <div className="flex items-center gap-4" key={artist.id}>
+                    <Avatar className="hidden h-9 w-9 sm:flex">
+                      <AvatarFallback>
+                        {artist.firstName.charAt(0).toUpperCase() +
+                          artist.lastName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid gap-1">
+                      <p className="text-sm font-medium leading-none">
+                        {artist?.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {artist.email}
+                      </p>
+                      <div className="font-medium">
+                        <Badge variant="outline" className="text-xs">
+                          {artist?.onboardingStatus}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-auto font-medium flex flex-col">
-                    <Badge variant="outline" className="text-xs">
-                      {artist?.onboardingStatus}
-                    </Badge>
-                  </div>
-                </div>
+                </>
               ))
             ) : (
               <div className="flex items-center gap-4">

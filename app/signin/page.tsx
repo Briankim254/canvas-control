@@ -29,6 +29,7 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -40,8 +41,7 @@ const formSchema = z.object({
 });
 
 export default function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
-  const { pending } = useFormStatus();
+  const [loading, setLoading] = useState(false);
   const { resolvedTheme } = useTheme();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,13 +51,19 @@ export default function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     const formData = new FormData();
     formData.append("email", values.email);
     formData.append("password", values.password);
-    dispatch(formData);
-    pending ? toast("Signing in...") : "";
-    console.log(values);
+    const res = await authenticate(formData);
+    if (res?.error) {
+      toast.error(res?.error);
+    }
+
+    if (res?.success) {
+      toast.success("Welcome back!");
+    }
   }
 
   return (
@@ -68,7 +74,7 @@ export default function LoginForm() {
             src={
               resolvedTheme?.includes("dark")
                 ? "/logo-white.png"
-                : "/logo-black.png"
+                : "/P&PLogo-2.png"
             }
             alt="Image"
             width="200"
@@ -96,9 +102,7 @@ export default function LoginForm() {
                         <FormControl>
                           <Input placeholder="me@example.com" {...field} />
                         </FormControl>
-                        <FormDescription>
-                          Enter your email below to login to your account.
-                        </FormDescription>
+                        <FormDescription>Enter your email.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -110,10 +114,19 @@ export default function LoginForm() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>Password</FormLabel>
+                          <Link
+                            href="/forgot-password"
+                            className="ml-auto inline-block text-sm underline"
+                          >
+                            Forgot your password?
+                          </Link>
+                        </div>
                         <FormControl>
                           <Input type="password" {...field} />
                         </FormControl>
+                        <FormDescription>Enter your password.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -123,11 +136,6 @@ export default function LoginForm() {
               <CardFooter>
                 <div className="flex flex-col flex-grow">
                   <LoginButton />
-                  {errorMessage && (
-                    <FormMessage className="text-red-500">
-                      {errorMessage.toString()}
-                    </FormMessage>
-                  )}
                 </div>
               </CardFooter>
             </form>
@@ -139,7 +147,7 @@ export default function LoginForm() {
           src={
             resolvedTheme?.includes("dark")
               ? "/logo-white.png"
-              : "/logo-black.png"
+              : "/P&PLogo-2.png"
           }
           alt="Image"
           width="1920"
