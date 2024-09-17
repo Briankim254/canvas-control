@@ -11,6 +11,7 @@ import {
 import { DataTable } from "@/app/admin/products/data-table";
 import { columns } from "@/app/admin/products/columns";
 import { getSession } from "@/auth";
+import { Badge } from "@/components/ui/badge";
 
 async function getData(id: string) {
   const session = await getSession();
@@ -49,6 +50,12 @@ export default async function UserPage({ params }: { params: { id: string } }) {
           <Separator className="my-6" />
           <div className="grid gap-4">
             <div>
+              <h3 className="text-lg font-semibold">Onbording Status</h3>
+              <Badge variant={"default"} className="">
+                {artist?.onboardingStatus || "N/A"}
+              </Badge>
+            </div>
+            <div>
               <h3 className="text-lg font-semibold">Phone</h3>
               <p className="text-muted-foreground">{artist?.phone || "N/A"}</p>
             </div>
@@ -70,6 +77,27 @@ export default async function UserPage({ params }: { params: { id: string } }) {
               <h3 className="text-lg font-semibold">Joined</h3>
               <p className="text-muted-foreground">
                 {new Date(artist?.createdDate).toDateString()}
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold">Onbording Request Date</h3>
+              <p className="text-muted-foreground">
+                {artist?.profileCompletedDate
+                  ? new Date(
+                      artist?.onboardingCompletionRequestDate
+                    ).toDateString()
+                  : "N/A"}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold">
+                Onbording Completion Date
+              </h3>
+              <p className="text-muted-foreground">
+                {artist?.profileCompletedDate
+                  ? new Date(artist?.onboardingCompletionDate).toDateString()
+                  : "N/A"}
               </p>
             </div>
           </div>
