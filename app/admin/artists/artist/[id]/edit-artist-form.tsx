@@ -39,7 +39,6 @@ const ArtistFormSchema = z.object({
 });
 
 export function EditArtistForm({ artist }: { artist: any }) {
-  console.log(artist);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof ArtistFormSchema>>({
@@ -70,7 +69,6 @@ export function EditArtistForm({ artist }: { artist: any }) {
         }
       );
     } catch (error) {
-      console.error(error);
       toast.error("Failed to update artist.");
     } finally {
       setIsLoading(false);

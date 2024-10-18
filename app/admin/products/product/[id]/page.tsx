@@ -17,7 +17,6 @@ async function getData(id: string, token: string) {
       Authorization: `Bearer ${token}` || "",
     },
   }).then((res) => res.json());
-  console.log(data);
   return data;
 }
 
@@ -144,7 +143,6 @@ export default async function UserPage({ params }: { params: { id: string } }) {
     .then((res) => {
       return res.data;
     });
-  console.log(product.tags);
   return (
     <>
       <div className="flex flex-col w-full max-w-6xl mx-auto gap-8 p-6 md:p-10 md:flex-row">

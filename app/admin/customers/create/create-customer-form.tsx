@@ -32,7 +32,6 @@ export type CustomerFormSchema = z.infer<typeof CustomerFormSchema>;
 
 export function CreateArtistForm() {
   const [isLoading, setIsLoading] = useState(false);
-  console.log(isLoading);
   const form = useForm<z.infer<typeof CustomerFormSchema>>({
     resolver: zodResolver(CustomerFormSchema),
     defaultValues: {
@@ -49,7 +48,6 @@ export function CreateArtistForm() {
       // await createCustomer(values);
       toast.success("Artist created successfully.");
     } catch (error) {
-      console.error(error);
       toast.error("Failed to create artist.");
     } finally {
       setIsLoading(false);

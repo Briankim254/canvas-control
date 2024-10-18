@@ -115,7 +115,6 @@ export default function SubOrders({
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching order details:", error);
       }
     },
     [user?.token]

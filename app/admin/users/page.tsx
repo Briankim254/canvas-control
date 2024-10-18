@@ -20,7 +20,6 @@ async function getData() {
       Authorization: `Bearer ${user?.token}` || "",
     },
   });
-  console.log(res);
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }

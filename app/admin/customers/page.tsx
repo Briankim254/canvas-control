@@ -15,7 +15,6 @@ async function getData() {
   const res = await fetch(`${process.env.BASE_URL}/customers`).then((res) =>
     res.json() || []
   );
-  console.log(res);
   if (res.message !== "success") {
     const data = res.data || [];
   }

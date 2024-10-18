@@ -86,7 +86,6 @@ export function PaperPriceForm({ paper, printSizes, pricing }: any) {
     } catch (error) {
       setIsLoading(false);
       toast.error(`Failed to ${pricing ? "update" : "create"} paper price`);
-      console.error(error);
     }
   }
 

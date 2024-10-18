@@ -41,7 +41,6 @@ export type CustomerFormSchema = z.infer<typeof UserFormSchema>;
 
 export function CreateArtistForm() {
   const [isLoading, setIsLoading] = useState(false);
-  console.log(isLoading);
   const form = useForm<z.infer<typeof UserFormSchema>>({
     resolver: zodResolver(UserFormSchema),
     defaultValues: {
@@ -57,7 +56,6 @@ export function CreateArtistForm() {
   async function onSubmit(values: z.infer<typeof UserFormSchema>) {
     setIsLoading(true);
     try {
-      console.log(values);
       toast.promise(
         createUser(values).then((data) => {
           return data;
@@ -74,7 +72,6 @@ export function CreateArtistForm() {
         }
       );
     } catch (error) {
-      console.error(error);
       toast.error("Failed to create User.");
     } finally {
       setIsLoading(false);

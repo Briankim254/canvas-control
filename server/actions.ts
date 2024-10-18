@@ -10,6 +10,7 @@ import { paperFormValues } from "@/app/admin/products/tags/print-paper/paper-for
 import { paperPriceFormValues } from "@/app/admin/products/tags/paper-price/paper-price-form";
 import { sizeFormValues } from "@/app/admin/products/tags/print-size/size-form";
 import { toast } from "sonner";
+import { json } from "stream/consumers";
 
 export const UserData = async () => {
   const user = await getSession();
@@ -156,12 +157,10 @@ export const EditProduct = async (id: string, data: FormData) => {
 };
 
 export const CreateFrame = async (data: FormData) => {
-  console.log(data);
   const frame = await fetch(`${process.env.BASE_URL}/products/frames`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
-      "Content-Type": "application/json",
     },
     body: data,
   }).then((res) => {

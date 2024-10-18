@@ -65,7 +65,6 @@ export function ProfileForm({ user }: { user: any }) {
         }
       );
     } catch (error) {
-      console.error(error);
       toast.error("Failed to update profile.");
     } finally {
       setIsLoading(false);

@@ -47,7 +47,6 @@ export default async function Dashboard() {
     })
     .catch((error) => {
       toast.error(`Failed to fetch stats: ${error.message}`);
-      console.error(error);
     });
 
   const recentArtists = await fetch(
@@ -64,7 +63,6 @@ export default async function Dashboard() {
     })
     .catch((error) => {
       toast.error(`Failed to fetch recent artists: ${error.message}`);
-      console.error(error);
     });
 
   const recentListings = await fetch(
@@ -81,7 +79,6 @@ export default async function Dashboard() {
     })
     .catch((error) => {
       toast.error(`Failed to fetch recent listings: ${error.message}`);
-      console.error(error);
     });
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">

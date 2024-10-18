@@ -6,7 +6,6 @@ import { getSession } from "@/auth";
 async function CreatArtist() {
   const session = await getSession();
   const user = session?.user;
-  console.log(user.token);
   const categories = await fetch(
     `${process.env.BASE_URL}/products/categories`,
     {

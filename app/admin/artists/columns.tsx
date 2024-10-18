@@ -75,7 +75,6 @@ export const columns: ColumnDef<any>[] = [
     header: "Onboarding",
     cell: ({ row }) => {
       const status = row.original.onboardingStatus;
-      console.log(status);
       return (
         <Badge variant={"outline"}>
           {status.charAt(0).toUpperCase() + status.slice(1)}

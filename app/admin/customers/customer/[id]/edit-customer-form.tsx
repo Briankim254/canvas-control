@@ -31,7 +31,6 @@ export type CustomerFormValues = z.infer<typeof CustomerFormSchema>;
 
 export function EditArtistForm({ customer , id }: { customer: any, id: string }) {
   const [isLoading, setIsLoading] = useState(false);
-  console.log(isLoading);
   const form = useForm<z.infer<typeof CustomerFormSchema>>({
     resolver: zodResolver(CustomerFormSchema),
     defaultValues: {

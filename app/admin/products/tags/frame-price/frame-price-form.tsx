@@ -84,7 +84,6 @@ export function FramePriceForm({ frames, frameSizes }: any) {
     } catch (error) {
       setIsLoading(false);
       toast.error("An error occurred while creating Frame price");
-      console.error(error);
     }
   }
 

@@ -25,7 +25,6 @@ async function getData(id: string) {
 export default async function UserPage({ params }: { params: { id: string } }) {
   const data = await getData(params.id);
   const customer = data?.data;
-  console.log(customer);
   return (
     <>
       <div className="flex flex-col w-full max-w-6xl mx-auto gap-8 p-6 md:p-10 md:flex-row">
