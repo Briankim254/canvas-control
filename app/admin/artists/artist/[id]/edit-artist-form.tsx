@@ -69,7 +69,7 @@ export function EditArtistForm({ artist }: { artist: any }) {
         }
       );
     } catch (error) {
-      toast.error("Failed to update artist.");
+      toast.error("Failed to update artist Profile.");
     } finally {
       setIsLoading(false);
     }
