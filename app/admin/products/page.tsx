@@ -1,4 +1,4 @@
-import { GalleryVertical, PlusCircle, Settings2 } from "lucide-react";
+import { PlusCircle, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,12 +30,9 @@ export default async function Products() {
   const session = await getSession();
   const user = session?.user;
   const data = await getData(user.token);
-  const published = data;
-  const draft = data;
-  const archived = data;
   return (
     <>
-      <div className="justify-end flex items-center gap-2">
+      <div className="justify-end flex m-3 items-center gap-2">
         <Link href="/admin/products/tags" className="">
           <Button size="sm" className="h-8 gap-1 ">
             <Settings2 className="h-3.5 w-3.5" />
@@ -53,7 +50,7 @@ export default async function Products() {
           </Button>
         </Link>
       </div>
-      <Card className="mt-4">
+      <Card className="m-3">
         <CardHeader>
           <CardTitle>Products</CardTitle>
           <CardDescription>

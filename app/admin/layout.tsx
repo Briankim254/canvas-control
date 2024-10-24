@@ -27,9 +27,6 @@ const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
   if (!user) {
     redirect("/signin");
   }
-  // if (user?.verification == "UNVERIFIED") {
-  //   redirect("/guest/verify");
-  // }
 
   return (
     <>

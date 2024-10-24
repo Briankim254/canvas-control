@@ -106,13 +106,6 @@ export const columns: ColumnDef<any>[] = [
               <DropdownMenuItem>Edit</DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                toast.warning("Not implemented yet");
-              }}
-            >
-              Archive
-            </DropdownMenuItem>
             {/* <DropdownMenuItem
               onClick={() => {
                 toast.promise(deleteProduct(product.id), {

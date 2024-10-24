@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { SiMedibangpaint } from "react-icons/si";
 import { usePathname } from "next/navigation";
+import { dancing_script } from "@/lib/fonts";
 
 function HeaderSheet() {
   const pathname = usePathname();
@@ -31,14 +32,15 @@ function HeaderSheet() {
         </SheetTrigger>
         <SheetContent side="left" className="sm:max-w-xs">
           <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              href="#"
-              className={`group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base
-                ${pathname === "" ? "text-accent-foreground bg-accent" : ""}`}
-            >
-              <SiMedibangpaint className="h-5 w-5 transition-all group-hover:scale-110" />
-              <span className="sr-only">Pixels & Paint</span>
-            </Link>
+            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+              <Link href="/" className="flex items-center gap-2 font-semibold">
+                <span
+                  className={`text-2xl tracking-wider text-purple-600 ${dancing_script.className}`}
+                >
+                  Pixels & Paint
+                </span>
+              </Link>
+            </div>
             <Link
               href="/admin/dashboard"
               className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground
@@ -97,7 +99,7 @@ function HeaderSheet() {
               }`}
             >
               <Users2 className="h-5 w-5" />
-              Users
+              Portal Users
             </Link>
             <Link
               href="/admin/artists"

@@ -46,8 +46,8 @@ export default async function Home() {
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Users</CardTitle>
-            <CardDescription>List of all Admin users</CardDescription>
+            <CardTitle>Portal Users</CardTitle>
+            <CardDescription>List of all Admin-Portal users</CardDescription>
           </CardHeader>
           <CardContent>
             <DataTable columns={columns} data={data} />

@@ -1,14 +1,8 @@
 "use client";
+
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  HandCoins,
   Home,
   Package,
-  PaintBucket,
   Palette,
   Settings,
   ShoppingCart,
@@ -70,7 +64,7 @@ export function Sidebar() {
           }`}
         >
           <Users2 className="h-4 w-4" />
-          Users
+          Portal Users
         </Link>
         <Link
           href="/admin/artists"
@@ -90,7 +84,6 @@ export function Sidebar() {
           <Settings className="h-4 w-4" />
           Settings
         </Link>
-        
       </nav>
     </>
   );
