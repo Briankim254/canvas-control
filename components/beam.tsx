@@ -46,7 +46,9 @@ export function AnimatedBeamArtist() {
       </div>
 
       <AnimatedBeam
-        duration={2}
+        duration={4}
+        delay={1}
+        pathWidth={5}
         containerRef={containerRef}
         fromRef={div1Ref}
         toRef={div2Ref}
