@@ -83,13 +83,15 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "orders",
-    header: "NO of orders",
+    accessorKey: "isVerified",
+    header: "Verification Status",
     cell: ({ row }) => {
-      return (
-        <div className="text-left font-medium">
-          {row.getValue("orders") || "N/A"}
-        </div>
+      const customer = row.original;
+
+      return customer.isVerified ? (
+        <Badge variant="outline">Verified</Badge>
+      ) : (
+        <Badge variant="secondary">Unverified</Badge>
       );
     },
   },

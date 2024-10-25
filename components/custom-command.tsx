@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   HandCoins,
   Home,
@@ -26,9 +26,9 @@ import { Input } from "./ui/input";
 import Link from "next/link";
 
 export function SearchCommandDialog({ user }: { user: User }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();

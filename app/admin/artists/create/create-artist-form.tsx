@@ -6,6 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormControl,
   FormDescription,
@@ -17,9 +25,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../../../../components/ui/textarea";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader2, Phone } from "lucide-react";
 import { createArtist } from "@/server/actions";
+import { AnimatedBeamArtist } from "@/components/beam";
+import Link from "next/link";
 
 const ArtistFormSchema = z.object({
   firstName: z.string().min(2).max(50),
@@ -55,20 +65,19 @@ export function CreateArtistForm() {
     },
   });
 
+  const [open, setOpen] = useState(false);
+
   async function onSubmit(values: z.infer<typeof ArtistFormSchema>) {
     setIsLoading(true);
 
     const res = await createArtist(values);
+
     if (res.error) {
       toast.error(res.error);
     } else if (res.message == "success") {
-      toast.success("Artist created successfully");
       form.reset();
-      setTimeout(() => {
-        window.location.href = "/admin/artists";
-      }, 3000);
-    }
-    else {
+      setOpen(true);
+    } else {
       toast.error("Failed to create artist");
     }
     setIsLoading(false);
@@ -196,6 +205,25 @@ export function CreateArtistForm() {
           </Button>
         </form>
       </Form>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Artist Created!</DialogTitle>
+            <DialogDescription>
+              An email has been sent to the artist with instructions on how to
+              complete their onboarding process.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mt-5">
+            <AnimatedBeamArtist />
+          </div>
+          <DialogFooter>
+            <Link href="/admin/artists">
+              <Button>Back to Artists</Button>
+            </Link>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
