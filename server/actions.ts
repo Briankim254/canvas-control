@@ -98,21 +98,7 @@ export const updateCustomer = async (data: CustomerFormValues, id: string) => {
   redirect("/admin/customers");
 };
 
-export const deleteCustomer = async (id: string) => {
-  const customer = await fetch(`${process.env.BASE_URL}/customers/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
-    },
-  }).then((res) => res.json());
 
-  if (customer.message !== "success") {
-    throw new Error("Failed to delete customer");
-  }
-  revalidatePath("/admin/customers");
-  revalidatePath("/admin/customers/customer/" + customer.id);
-  return customer;
-};
 
 export const CreateProduct = async (data: FormData) => {
   console.log(data);
