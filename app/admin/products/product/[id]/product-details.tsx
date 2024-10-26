@@ -6,42 +6,14 @@ import {
   Bookmark,
   Shapes,
   Sparkles,
-  Square,
-  Layers,
   Scan,
   Origami,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export function ArtProductDetailsComponent(props: {
-  categories: any;
-  artists: any;
-  paper: any;
-  sizes: any;
-  frames: any;
-  subjects: any;
-  styles: any;
-  mediums: any;
-  colors: any;
-  themes: any;
-  product: any;
-}) {
-  const {
-    categories,
-    artists,
-    paper,
-    sizes,
-    frames,
-    subjects,
-    styles,
-    mediums,
-    colors,
-    themes,
-    product,
-  } = props;
-
-  console.log(product);
+export function ArtProductDetailsComponent(props: { product: any }) {
+  const { product } = props;
 
   interface DetailItemProps {
     icon: React.ReactNode;
