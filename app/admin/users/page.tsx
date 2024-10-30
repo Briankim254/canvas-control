@@ -21,7 +21,8 @@ async function getData() {
     },
   });
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    console.log(res);
+    return { error: `${res.statusText}` };
   }
   return res.json().then((data) => data.data);
 }

@@ -10,21 +10,24 @@ import {
 import { DataTable } from "../../data-table";
 import { columns } from "./columns";
 import { toast } from "sonner";
+import { UserData } from "@/server/actions";
 
 async function getData(id: string) {
-  const data = await fetch(`${process.env.BASE_URL}/customers/${id}`).then(
-    (res) => res.json()
-  );
+  const data = await fetch(`${process.env.BASE_URL}/customers/${id}`, {
+    headers: {
+      Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
+    },
+  }).then((res) => res.json());
   if (data.message !== "success") {
-    toast.error("Failed to fetch customer data");
-    return null;
+    console.log(data.message);
+    return [];
   }
   return data;
 }
 
 export default async function UserPage({ params }: { params: { id: string } }) {
   const data = await getData(params.id);
-  const customer = data?.data;
+  const customer = data?.data || [];
   return (
     <>
       <div className="flex flex-col w-full max-w-6xl mx-auto gap-8 p-6 md:p-10 md:flex-row">

@@ -103,20 +103,12 @@ export const columns: ColumnDef<any>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <Link href={`/admin/products/product/${product.id}`}>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem>View Product</DropdownMenuItem>
+            </Link>
+            <Link href={`/admin/products/product/edit/${product.id}`}>
+              <DropdownMenuItem>Edit Product</DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem
-              onClick={() => {
-                toast.promise(deleteProduct(product.id), {
-                  loading: "Deleting product...",
-                  success: "Product deleted!",
-                  error: "Failed to delete product",
-                });
-              }}
-            >
-              Delete
-            </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() =>
                 toast.promise(navigator.clipboard.writeText(product.id), {

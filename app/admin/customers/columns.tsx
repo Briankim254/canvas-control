@@ -15,7 +15,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
-import { deleteCustomer } from "@/server/actions";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -120,15 +119,6 @@ export const columns: ColumnDef<any>[] = [
               onClick={() => navigator.clipboard.writeText(customer.id)}
             >
               Copy ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={async () => {
-                await deleteCustomer(customer.id);
-                revalidatePath("/admin/customers");
-              }}
-            >
-              <button className="w-full text-left text-red-500">Delete</button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
