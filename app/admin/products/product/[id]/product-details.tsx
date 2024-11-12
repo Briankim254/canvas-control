@@ -12,8 +12,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-export function ArtProductDetailsComponent(props: { product: any }) {
-  const { product } = props;
+export function ArtProductDetailsComponent(props: { product: any, frame:any }) {
+  const { product,frame } = props;
 
   interface DetailItemProps {
     icon: React.ReactNode;
