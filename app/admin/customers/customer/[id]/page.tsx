@@ -19,7 +19,6 @@ async function getData(id: string) {
     },
   }).then((res) => res.json());
   if (data.message !== "success") {
-    console.log(data.message);
     return [];
   }
   return data;
