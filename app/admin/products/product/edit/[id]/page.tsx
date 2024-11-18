@@ -162,7 +162,7 @@ export default async function UserPage({ params }: { params: { id: string } }) {
           />
         )}
       </div>
-      <div className="mx-auto py-5 px-5">
+      {/* <div className="mx-auto py-5 px-5">
         <Card>
           <CardHeader>
             <CardTitle>Orders</CardTitle>
@@ -174,7 +174,7 @@ export default async function UserPage({ params }: { params: { id: string } }) {
             <DataTable columns={columns} data={orders} />
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </>
   );
 }

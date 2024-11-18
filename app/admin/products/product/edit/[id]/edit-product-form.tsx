@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import React, { useEffect, useState } from "react";
-import { Check, ChevronsUpDown, Info, Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Info, Loader2, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, PlusCircle, Upload } from "lucide-react";
@@ -54,12 +54,26 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { FileUpload } from "@/components/ui/singe-image-upload";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ProductFormSchema = z.object({
   image: typeof window === "undefined" ? z.any() : z.instanceof(File),
@@ -75,11 +89,15 @@ const ProductFormSchema = z.object({
   style: z.string().nonempty(),
   palette: z.string().nonempty(),
   theme: z.string().nonempty(),
-  defaultSize: z.coerce.number(),
   defaultPaper: z.coerce.number(),
-  basePrice: z.string().nonempty(),
   stock: z.coerce.number(),
 });
+
+const variantSchema = z.object({
+  size: z.coerce.number().min(1, "Please select a size"),
+  price: z.coerce.number().min(1, "Required. Price must be greater than 0"),
+});
+
 export type ProductFormSchema = z.infer<typeof ProductFormSchema>;
 
 export function EditProductForm(props: {
@@ -121,16 +139,83 @@ export function EditProductForm(props: {
       style: product.tags.styleId || "",
       palette: product.tags.colorPaletteId || "",
       theme: product.tags.themeId || "",
-      defaultSize: product.defaultSizeId || "",
       defaultPaper: product.defaultPaperId || "",
-      basePrice: product.basePrice || "",
       stock: product.stock || "",
       category: product.categoryId || "",
-      image:  product.image || "",
+      image: product.image || "",
     },
   });
 
   const [files, setFiles] = useState<File[]>([]);
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [newVariant, setNewVariant] = useState<NewVariant>({
+    size: "",
+    price: "",
+  });
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (product.variants) {
+      setVariants(
+        product.variants.map((variant: any) => ({
+          size: variant.size_id,
+          price: variant.price,
+        }))
+      );
+    }
+  }, [product.variants]);
+
+  type Variant = {
+    size: number;
+    price: number;
+  };
+
+  type NewVariant = {
+    size: string;
+    price: string;
+  };
+
+  interface HandleVariantChange {
+    (index: number, field: string, value: string | number): void;
+  }
+
+  interface HandleDeleteVariant {
+    (index: number): void;
+  }
+
+  const ismobile = useIsMobile();
+
+  const handleAddVariant = () => {
+    const parsedVariant = variantSchema.safeParse(newVariant);
+    if (!parsedVariant.success) {
+      toast.error(parsedVariant.error.errors[0].message);
+      return;
+    }
+    setVariants([
+      ...variants,
+      { size: Number(newVariant.size), price: Number(newVariant.price) },
+    ]);
+    setNewVariant({ size: "", price: "" });
+    toast.success("Variant added successfully");
+    setOpen(false);
+  };
+
+  const handleVariantChange: HandleVariantChange = (index, field, value) => {
+    const updatedVariants = variants.map((variant, i) =>
+      i === index ? { ...variant, [field]: value } : variant
+    );
+    setVariants(updatedVariants);
+  };
+
+  const handleNewVariantChange = (name: string, value: string) => {
+    setNewVariant({ ...newVariant, [name]: value });
+  };
+
+  const handleDeleteVariant: HandleDeleteVariant = (index) => {
+    const updatedVariants = variants.filter((_, i) => i !== index);
+    setVariants(updatedVariants);
+    toast.warning("Variant deleted");
+  };
 
   const handleFileUpload = (uploadedFiles: File[]) => {
     if (uploadedFiles.length > 0) {
@@ -149,7 +234,6 @@ export function EditProductForm(props: {
     const data = new FormData();
     data.append("title", values.title);
     data.append("description", values.description);
-    data.append("price", values.basePrice);
     data.append("stock", values.stock.toString());
     data.append("category", values.category.toString());
     data.append("subject", values.subject.toString());
@@ -157,11 +241,13 @@ export function EditProductForm(props: {
     data.append("style", values.style.toString());
     data.append("palette", values.palette.toString());
     data.append("theme", values.theme.toString());
-    data.append("defaultSize", values.defaultSize.toString());
     data.append("defaultPaper", values.defaultPaper.toString());
     data.append("artist", values.artist);
     if (values.image) {
       data.append("image", values.image);
+    }
+    if (variants.length > 0) {
+      data.append("variants", JSON.stringify(variants));
     }
     setIsLoading(true);
     const res: any = await EditProduct(product.id, data);
@@ -174,6 +260,7 @@ export function EditProductForm(props: {
     toast.success("Product created successfully");
     form.reset;
     setFiles([]);
+    setVariants([]);
   }
   return (
     <Form {...form}>
@@ -202,7 +289,7 @@ export function EditProductForm(props: {
                     Discard
                   </Button>
                 </Link>
-                <Button disabled={isLoading} type="submit" size="sm">
+                <Button disabled={true} type="submit" size="sm">
                   {isLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
@@ -268,6 +355,189 @@ export function EditProductForm(props: {
                       </div>
                     </div>
                   </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Stock</CardTitle>
+                    <CardDescription>
+                      Add product variants based on size and price
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          {!ismobile && (
+                            <TableHead className="w-[100px]">SKU</TableHead>
+                          )}
+                          <TableHead>Price(ksh)</TableHead>
+                          <TableHead>Size</TableHead>
+                          <TableHead className="w-[50px]"></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {variants.length > 0 ? (
+                          variants.map((variant, index) => (
+                            <TableRow key={index}>
+                              {!ismobile && (
+                                <TableCell className="font-semibold text-muted-foreground">
+                                  #{index + 1}
+                                </TableCell>
+                              )}
+                              <TableCell>
+                                <Label
+                                  htmlFor={`price-${index}`}
+                                  className="sr-only"
+                                >
+                                  Price
+                                </Label>
+                                <Input
+                                  id={`price-${index}`}
+                                  type="number"
+                                  defaultValue={variant.price}
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      index,
+                                      "price",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Select
+                                  onValueChange={(value) =>
+                                    handleVariantChange(index, "size", value)
+                                  }
+                                  defaultValue={variant.size.toString()}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a Size" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {sizes.map((size: any) => (
+                                      <SelectItem
+                                        value={size.id.toString()}
+                                        key={size.id}
+                                      >
+                                        <div>
+                                          <div>
+                                            {size.name}{" "}
+                                            {!ismobile && (
+                                              <span className="text-muted-foreground">
+                                                - {size.centimeters}
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="destructive"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleDeleteVariant(index);
+                                  }}
+                                >
+                                  <Trash size={10} />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={4} className="text-center">
+                              <div className="flex items-center justify-center gap-2">
+                                <Info className="h-4 w-4" />
+                                <span>No Product variants added yet</span>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                  <CardFooter className="justify-center border-t p-4">
+                    <Dialog open={open} onOpenChange={setOpen}>
+                      <DialogTrigger asChild>
+                        <Button size="sm" variant="secondary" className="gap-1">
+                          <PlusCircle className="h-3.5 w-3.5" />
+                          Add Variant
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Add Variant</DialogTitle>
+                          <DialogDescription>
+                            Make changes to your Variant here. Click save when
+                            you're done.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid grid-cols-1 gap-4">
+                          <div>
+                            <Label htmlFor="size" className="text-right">
+                              Size
+                            </Label>
+                            <Select
+                              onValueChange={(value) =>
+                                handleNewVariantChange("size", value)
+                              }
+                              defaultValue={newVariant.size}
+                              required
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a Size" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {sizes.map((size: any) => (
+                                  <SelectItem
+                                    value={size.id.toString()}
+                                    key={size.id}
+                                  >
+                                    <div>
+                                      <div>
+                                        {size.name}{" "}
+                                        <span className="text-muted-foreground">
+                                          - {size.centimeters}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label htmlFor="price" className="text-right">
+                              Price
+                            </Label>
+                            <Input
+                              required
+                              id="price"
+                              name="price"
+                              type="number"
+                              onChange={(e) =>
+                                handleNewVariantChange("price", e.target.value)
+                              }
+                            />{" "}
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button className="w-full" onClick={handleAddVariant}>
+                            Save
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </CardFooter>
                 </Card>
                 <Card>
                   <CardHeader>
@@ -653,66 +923,19 @@ export function EditProductForm(props: {
                       <div className="grid gap-3">
                         <FormField
                           control={form.control}
-                          name="defaultSize"
+                          name="stock"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="flex items-center gap-2">
-                                <span>Size</span>{" "}
-                                <HoverCard>
-                                  <HoverCardTrigger>
-                                    <Info className=" h-3" />
-                                  </HoverCardTrigger>
-                                  <HoverCardContent>
-                                    {sizes.map((size: any) => (
-                                      <div key={size.id}>
-                                        <div>
-                                          {size.paper_size} - ${size.price}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground">
-                                          <p>{size.inches}</p>
-                                          <p>{size.millimeters}</p>
-                                          <p>
-                                            Created on:{" "}
-                                            {new Date(
-                                              size.created_on
-                                            ).toLocaleDateString()}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </HoverCardContent>
-                                </HoverCard>
-                              </FormLabel>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value.toString()}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select a Size" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {sizes.map((size: any) => (
-                                    <SelectItem
-                                      value={size.id.toString()}
-                                      key={size.id}
-                                    >
-                                      <div>
-                                        <div>
-                                          {size.paper_size} - {size.centimeters}
-                                        </div>
-                                        <span className="text-muted-foreground">
-                                          {" "}
-                                          (${size.price})
-                                        </span>
-                                      </div>
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <FormLabel>Stock Count</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="Stock count"
+                                  {...field}
+                                />
+                              </FormControl>
                               <FormDescription>
-                                The category of the product.
+                                The number of items available for sale.
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -757,56 +980,6 @@ export function EditProductForm(props: {
                     </div>
                   </CardContent>
                 </Card>
-                <Card x-chunk="dashboard-07-chunk-1">
-                  <CardHeader>
-                    <CardTitle>Stock</CardTitle>
-                    <CardDescription>
-                      Add product price and stock count
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="basePrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Price</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Product price"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            The price should be in Ksh.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="stock"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stock Count</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Stock count"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            The number of items available for sale.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
                 <Card className="overflow-hidden">
                   <CardHeader>
                     <CardTitle>Product Images</CardTitle>
@@ -834,7 +1007,7 @@ export function EditProductForm(props: {
                   Discard
                 </Button>
               </Link>
-              <Button type="submit" size="sm">
+              <Button disabled type="submit" size="sm">
                 Update Product
               </Button>
             </div>
