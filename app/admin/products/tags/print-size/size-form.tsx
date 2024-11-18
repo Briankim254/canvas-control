@@ -23,7 +23,6 @@ const sizeFormSchema = z.object({
   inches: z.string().max(40).min(4),
   millimeters: z.string().max(40).min(4),
   centimeters: z.string().max(40).min(4),
-  price: z.coerce.number().positive(),
 });
 
 export type sizeFormValues = z.infer<typeof sizeFormSchema>;
@@ -32,11 +31,10 @@ export function SizeForm(props: any) {
   const form = useForm<sizeFormValues>({
     resolver: zodResolver(sizeFormSchema),
     defaultValues: {
-      size: props?.size?.paper_size || "",
+      size: props?.size?.name || "",
       inches: props?.size?.inches || "",
       millimeters: props?.size?.millimeters || "",
       centimeters: props?.size?.centimeters || "",
-      price: props?.size?.price || 0,
     },
   });
 
@@ -133,26 +131,6 @@ export function SizeForm(props: any) {
                 />
               </FormControl>
               <FormDescription>The size in centimeters.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input
-                  className="w-full"
-                  type="number"
-                  min={0}
-                  placeholder="Price goes here"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>The price of the size.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

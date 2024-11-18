@@ -88,7 +88,7 @@ export default async function SettingsAccountPage() {
       <Separator />
       <div className="grid w-full grid-cols-1 gap-6 mx-auto lg:grid-cols-3">
         {data.map((data: any) => (
-          <div className="p-6" key={data.id}>
+          <div className="p-6" key={data.id || data.frameId}>
             <Image
               src={data.frameImage || "/placeholder.png"}
               alt={data.frameName}

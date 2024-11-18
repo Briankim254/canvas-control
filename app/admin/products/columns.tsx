@@ -81,14 +81,6 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "basePrice",
-    header: "Base Price",
-    cell: ({ row }) => {
-      const product = row.original;
-      return <div>Ksh {product.basePrice}</div>;
-    },
-  },
-  {
     id: "id",
     header: "Artist",
     cell: ({ row }) => {

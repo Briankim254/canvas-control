@@ -73,7 +73,7 @@ export default async function SettingsAppearancePage() {
               Created on {new Date(item.created_on).toDateString()}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Sheet>
               <SheetTrigger asChild>
                 <Button size="sm" variant="outline" className="h-8 gap-1 ">
@@ -95,7 +95,7 @@ export default async function SettingsAppearancePage() {
             <Button size="sm" variant="outline" className="h-8">
               Delete
             </Button>
-          </div>
+          </div> */}
         </div>
       ))}
     </div>
