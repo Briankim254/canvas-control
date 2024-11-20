@@ -21,7 +21,6 @@ async function getData() {
     },
   });
   if (!res.ok) {
-    console.log(res);
     return { error: `${res.statusText}` };
   }
   return res.json().then((data) => data.data);

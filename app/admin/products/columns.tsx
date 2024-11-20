@@ -71,20 +71,22 @@ export const columns: ColumnDef<any>[] = [
     header: "Default Paper",
   },
   {
-    accessorKey: "defaultSize",
-    header: "Default Size",
-  },
-  {
-    accessorKey: "basePrice",
-    header: "Base Price",
+    accessorKey: "variantCount",
+    header: "Variants",
     cell: ({ row }) => {
       const product = row.original;
-      return <div>Ksh {product.basePrice}</div>;
+      return (
+        <Badge variant={"secondary"}>{product?.variantCount || 0}</Badge>
+      );
     },
   },
   {
-    accessorKey: "stock",
-    header: "Stock",
+    id: "id",
+    header: "Artist",
+    cell: ({ row }) => {
+      const product = row.original;
+      return <div>{product?.artist?.fullName}</div>;
+    },
   },
   {
     enableHiding: false,

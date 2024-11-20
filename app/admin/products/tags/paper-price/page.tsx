@@ -97,7 +97,7 @@ export default async function SettingsDisplayPage() {
               {item.sizeName} - {item.price}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <Sheet>
               <SheetTrigger asChild>
                 <Button size="sm" variant="outline" className="h-8">
@@ -125,7 +125,7 @@ export default async function SettingsDisplayPage() {
                 Delete
               </span>
             </Button>
-          </div>
+          </div> */}
         </div>
       ))}
     </div>

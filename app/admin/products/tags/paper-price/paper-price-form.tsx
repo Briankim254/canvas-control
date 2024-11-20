@@ -168,9 +168,7 @@ export function PaperPriceForm({ paper, printSizes, pricing }: any) {
                   <HoverCardContent>
                     {printSizes.map((size: any) => (
                       <div key={size.id}>
-                        <div>
-                          {size.paper_size} - Ksh {size.price}
-                        </div>
+                        <div>{size.name}</div>
                         <div className="text-sm text-muted-foreground">
                           <p>{size.inches}</p>
                           <p>{size.millimeters}</p>
@@ -198,12 +196,11 @@ export function PaperPriceForm({ paper, printSizes, pricing }: any) {
                     <SelectItem value={size.id.toString()} key={size.id}>
                       <div>
                         <div>
-                          {size.paper_size} - {size.centimeters}
+                          {size.name} - {size.centimeters}
                         </div>
-                        <span className="text-muted-foreground">
-                          {" "}
-                          (Ksh {size.price})
-                        </span>
+                        <div className="text-sm text-muted-foreground">
+                          {size.inches} || {size.millimeters}
+                        </div>
                       </div>
                     </SelectItem>
                   ))}

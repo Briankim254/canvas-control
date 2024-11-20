@@ -67,7 +67,7 @@ export default async function SettingsNotificationsPage() {
       {data.map((item: any) => (
         <div key={item.id} className="flex items-center justify-between">
           <div key={item.id}>
-            <h3 className="text-lg font-medium">{item.paper_size}</h3>
+            <h3 className="text-lg font-medium">{item.name}</h3>
             <p className="text-sm text-muted-foreground">
               {item.inches} inches
             </p>
@@ -100,9 +100,9 @@ export default async function SettingsNotificationsPage() {
                 <SizeForm size={item} />
               </SheetContent>
             </Sheet>
-            <Button size="sm" variant="outline" className="h-8">
+            {/* <Button size="sm" variant="outline" className="h-8">
               Delete
-            </Button>
+            </Button> */}
           </div>
         </div>
       ))}

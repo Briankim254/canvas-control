@@ -167,9 +167,7 @@ export function FramePriceForm({ frames, frameSizes }: any) {
                   <HoverCardContent>
                     {frameSizes.map((size: any) => (
                       <div key={size.id}>
-                        <div>
-                          {size.paper_size} - Ksh {size.price}
-                        </div>
+                        <div>{size.name}</div>
                         <div className="text-sm text-muted-foreground">
                           <p>{size.inches}</p>
                           <p>{size.millimeters}</p>
@@ -197,11 +195,10 @@ export function FramePriceForm({ frames, frameSizes }: any) {
                     <SelectItem value={size.id.toString()} key={size.id}>
                       <div>
                         <div>
-                          {size.paper_size} - {size.centimeters}
+                          {size.name} - {size.centimeters}
                         </div>
                         <span className="text-muted-foreground">
-                          {" "}
-                          (Ksh {size.price})
+                          {size.inches} || {size.millimeters}
                         </span>
                       </div>
                     </SelectItem>
