@@ -71,12 +71,12 @@ export const columns: ColumnDef<any>[] = [
     header: "Default Paper",
   },
   {
-    accessorKey: "variants",
+    accessorKey: "variantCount",
     header: "Variants",
     cell: ({ row }) => {
       const product = row.original;
       return (
-        <Badge variant={"secondary"}>{product?.variants?.length || 0}</Badge>
+        <Badge variant={"secondary"}>{product?.variantCount || 0}</Badge>
       );
     },
   },

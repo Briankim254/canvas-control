@@ -332,7 +332,7 @@ export function CreateProductForm(props: {
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle>Stock</CardTitle>
+                    <CardTitle>Varinats</CardTitle>
                     <CardDescription>
                       Add product variants based on size and price
                     </CardDescription>
