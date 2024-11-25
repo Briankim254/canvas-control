@@ -332,9 +332,9 @@ export function CreateProductForm(props: {
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle>Varinats</CardTitle>
+                    <CardTitle>Product Varinats</CardTitle>
                     <CardDescription>
-                      Add product variants based on size and price
+                      Add available print sizes and their prices.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -358,26 +358,6 @@ export function CreateProductForm(props: {
                                   #{index + 1}
                                 </TableCell>
                               )}
-                              <TableCell>
-                                <Label
-                                  htmlFor={`price-${index}`}
-                                  className="sr-only"
-                                >
-                                  Price
-                                </Label>
-                                <Input
-                                  id={`price-${index}`}
-                                  type="number"
-                                  defaultValue={variant.price}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "price",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </TableCell>
                               <TableCell>
                                 <Select
                                   onValueChange={(value) =>
@@ -410,6 +390,26 @@ export function CreateProductForm(props: {
                                     ))}
                                   </SelectContent>
                                 </Select>
+                              </TableCell>
+                              <TableCell>
+                                <Label
+                                  htmlFor={`price-${index}`}
+                                  className="sr-only"
+                                >
+                                  Price
+                                </Label>
+                                <Input
+                                  id={`price-${index}`}
+                                  type="number"
+                                  defaultValue={variant.price}
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      index,
+                                      "price",
+                                      e.target.value
+                                    )
+                                  }
+                                />
                               </TableCell>
                               <TableCell>
                                 <Button

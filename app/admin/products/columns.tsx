@@ -50,7 +50,7 @@ export const columns: ColumnDef<any>[] = [
         <Image
           src={product.image || "/placeholder.png"}
           alt={product.name}
-          className="aspect-square rounded-md object-cover"
+          className="aspect-square rounded-md object-cover resize-none"
           height="64"
           width="64"
         />
@@ -71,12 +71,12 @@ export const columns: ColumnDef<any>[] = [
     header: "Default Paper",
   },
   {
-    accessorKey: "variantCount",
+    accessorKey: "countVariants",
     header: "Variants",
     cell: ({ row }) => {
       const product = row.original;
       return (
-        <Badge variant={"secondary"}>{product?.variantCount || 0}</Badge>
+        <Badge variant={"secondary"}>{product?.countVariants || 0}</Badge>
       );
     },
   },

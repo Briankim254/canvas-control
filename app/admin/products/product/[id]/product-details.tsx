@@ -27,10 +27,14 @@ export function ArtProductDetailsComponent(props: {
   }
 
   const DetailItem = ({ icon, label, value }: DetailItemProps) => (
-    <div className="flex items-center space-x-2 bg-muted rounded-lg p-3">
-      {icon}
-      <span className="font-semibold">{label}:</span>
-      <span className="font-light">{value}</span>
+    <div className="grid grid-cols-2  bg-muted rounded-lg p-3">
+      <div className="flex items-center space-x-2">
+        {icon}
+        <span className="font-semibold">{label}</span>
+      </div>
+      <div>
+        <span className="font-light">{value}</span>
+      </div>
     </div>
   );
 

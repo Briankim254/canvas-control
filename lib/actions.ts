@@ -18,7 +18,7 @@ export async function authenticate(formData: FormData) {
         "Content-Type": "application/json",
       },
     });
-    
+
     if (!response.ok) {
       return { error: `Failed to login: ${response.statusText}` };
     }

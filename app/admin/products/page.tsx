@@ -21,7 +21,8 @@ async function getData(token: any) {
   }).then((res) => res.json());
   if (res.message !== "success") {
     toast.error("Failed to fetch products");
-    const data = [];
+    const data: [] = [];
+    return data;
   }
   const data = res.data;
   return data;
