@@ -16,19 +16,16 @@ import {
 } from "@/components/ui/sheet";
 import { buttonVariants } from "@/components/ui/button";
 import { getSession } from "@/auth";
+import FramePricePage from "./(frame-price)/frame-price";
 
 export default async function SettingsProfilePage() {
   const session = await getSession();
   const user = session?.user;
-  const frames = await fetch(`${process.env.BASE_URL}/products/frames`,
-    {
-      headers: {
-        Authorization: `Bearer ${user?.token}` || "",
-      },
-    }
-  ).then(
-    (res) => res.json()
-  );
+  const frames = await fetch(`${process.env.BASE_URL}/products/frames`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  }).then((res) => res.json());
   if (frames.message !== "success") {
     toast.error("Failed to fetch frames");
     const frames = [];
@@ -85,6 +82,8 @@ export default async function SettingsProfilePage() {
           </div>
         ))}
       </div>
+      <Separator />
+      <FramePricePage />
     </div>
   );
 }

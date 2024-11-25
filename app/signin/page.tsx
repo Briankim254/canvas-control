@@ -64,6 +64,7 @@ export default function LoginForm() {
     if (res?.success) {
       toast.success("Welcome back!");
     }
+    setLoading(false);
   }
 
   return (
@@ -135,7 +136,16 @@ export default function LoginForm() {
               </CardContent>
               <CardFooter>
                 <div className="flex flex-col flex-grow">
-                  <LoginButton />
+                  <Button
+                    aria-disabled={loading}
+                    type="submit"
+                    className="w-full"
+                  >
+                    {loading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {loading ? "Signing in..." : "Sign in"}
+                  </Button>
                 </div>
               </CardFooter>
             </form>
@@ -156,27 +166,5 @@ export default function LoginForm() {
         />
       </div>
     </div>
-  );
-}
-
-function LoginButton() {
-  const { pending } = useFormStatus();
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (pending) {
-      event.preventDefault();
-    }
-  };
-
-  return (
-    <Button
-      aria-disabled={pending}
-      type="submit"
-      onClick={handleClick}
-      className="w-full"
-    >
-      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {pending ? "Signing in..." : "Sign in"}
-    </Button>
   );
 }

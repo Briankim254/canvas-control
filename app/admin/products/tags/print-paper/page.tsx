@@ -14,19 +14,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Frame } from "lucide-react";
 import { getSession } from "@/auth";
+import PaperPricePage from "../(paper-price)/paper-price";
 
 export default async function SettingsAppearancePage() {
   const session = await getSession();
   const user = session?.user;
-  const paper = await fetch(`${process.env.BASE_URL}/products/paper`,
-    {
-      headers: {
-        Authorization: `Bearer ${user?.token}` || "",
-      },
-    }
-  ).then(
-    (res) => res.json()
-  );
+  const paper = await fetch(`${process.env.BASE_URL}/products/paper`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}` || "",
+    },
+  }).then((res) => res.json());
   if (paper.message !== "success") {
     toast.error("Failed to fetch paper");
     const paper = [];
@@ -36,9 +33,9 @@ export default async function SettingsAppearancePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium">Print Paper</h3>
+          <h3 className="text-lg font-extrabold">Print Papers</h3>
           <p className="text-sm text-muted-foreground">
-            Customize the printing paper settings for your store.
+            Customize the printing papers for your store.
           </p>
         </div>
         <div>
@@ -65,15 +62,16 @@ export default async function SettingsAppearancePage() {
         </div>
       </div>
       <Separator />
-      {data.map((item: any) => (
-        <div key={item.id} className="flex items-center justify-between">
-          <div>
-            <p className="text-lg font-medium">{item.name}</p>
-            <p className="text-sm text-muted-foreground">
-              Created on {new Date(item.created_on).toDateString()}
-            </p>
-          </div>
-          {/* <div className="flex items-center gap-2">
+      <div>
+        {data.map((item: any) => (
+          <div key={item.id} className="flex items-center justify-between">
+            <div>
+              <p className="text-lg font-medium">{item.name}</p>
+              <p className="text-sm text-muted-foreground">
+                Created on {new Date(item.created_on).toDateString()}
+              </p>
+            </div>
+            {/* <div className="flex items-center gap-2">
             <Sheet>
               <SheetTrigger asChild>
                 <Button size="sm" variant="outline" className="h-8 gap-1 ">
@@ -96,8 +94,13 @@ export default async function SettingsAppearancePage() {
               Delete
             </Button>
           </div> */}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
+      <Separator />
+      <div>
+        <PaperPricePage />
+      </div>
     </div>
   );
 }

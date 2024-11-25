@@ -5,9 +5,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { CustomerFormValues } from "@/app/admin/customers/customer/[id]/edit-customer-form";
 import { getSession } from "@/auth";
-import { framePriceFormValues } from "@/app/admin/products/tags/frame-price/frame-price-form";
+import { framePriceFormValues } from "@/app/admin/products/tags/(frame-price)/frame-price-form";
 import { paperFormValues } from "@/app/admin/products/tags/print-paper/paper-form";
-import { paperPriceFormValues } from "@/app/admin/products/tags/paper-price/paper-price-form";
+import { paperPriceFormValues } from "@/app/admin/products/tags/(paper-price)/paper-price-form";
 import { sizeFormValues } from "@/app/admin/products/tags/print-size/size-form";
 import { toast } from "sonner";
 import { json } from "stream/consumers";
@@ -98,10 +98,7 @@ export const updateCustomer = async (data: CustomerFormValues, id: string) => {
   redirect("/admin/customers");
 };
 
-
-
 export const CreateProduct = async (data: FormData) => {
-  console.log(data);
   const product = await fetch(`${process.env.BASE_URL}/products/add`, {
     method: "POST",
     body: data,
@@ -109,14 +106,11 @@ export const CreateProduct = async (data: FormData) => {
       Authorization: `Bearer ${await UserData().then((user) => user.token)}`,
     },
   }).then((res) => {
-    console.log(res);
-
     if (!res.ok) {
       return { error: `${res.statusText}` };
     }
     return res.json();
   });
-  console.log(product);
   if (product.message != "success" || product.error) {
     return { error: `${product.message ? product.message : product.error}` };
   }

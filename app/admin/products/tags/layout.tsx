@@ -24,16 +24,8 @@ const sidebarNavItems = [
     href: "/admin/products/tags",
   },
   {
-    title: "Frame Price",
-    href: "/admin/products/tags/frame-price",
-  },
-  {
     title: "Print Paper",
     href: "/admin/products/tags/print-paper",
-  },
-  {
-    title: "Paper Price",
-    href: "/admin/products/tags/paper-price",
   },
   {
     title: "Print Size",

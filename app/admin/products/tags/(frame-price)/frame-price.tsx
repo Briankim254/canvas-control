@@ -14,7 +14,7 @@ import { Frame } from "lucide-react";
 import Image from "next/image";
 import { getSession } from "@/auth";
 
-export default async function SettingsAccountPage() {
+export default async function FramePricePage() {
   const session = await getSession();
   const user = session?.user;
   const frames = await fetch(`${process.env.BASE_URL}/products/frames`,
@@ -86,17 +86,19 @@ export default async function SettingsAccountPage() {
         </div>
       </div>
       <Separator />
-      <div className="grid w-full grid-cols-1 gap-6 mx-auto lg:grid-cols-3">
+      <div className="grid justify-evenly grid-cols-1 md:grid-cols-2 gap-6 mx-auto lg:grid-cols-3">
         {data.map((data: any) => (
           <div className="p-6" key={data.id || data.frameId}>
+            <div>
             <Image
               src={data.frameImage || "/placeholder.png"}
               alt={data.frameName}
-              className="aspect-square rounded-md object-cover"
+              className="aspect-auto rounded-md object-fill"
               height="200"
               width="200"
               key={data.id}
             />
+            </div>
             <h1
               className="mx-auto mb-8 font-semibold leading-none tracking-tighter"
               key={data.id}

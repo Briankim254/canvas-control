@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Frame } from "lucide-react";
 import { getSession } from "@/auth";
 
-export default async function SettingsDisplayPage() {
+export default async function PaperPricePage() {
   const session = await getSession();
   const user = session?.user;
   const paperSizes = await fetch(`${process.env.BASE_URL}/products/sizes`,
@@ -61,7 +61,7 @@ export default async function SettingsDisplayPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium">Paper Prices</h3>
+          <h3 className="text-lg font-extrabold">Paper Prices</h3>
           <p className="text-sm text-muted-foreground">
             Customize the paper prices for your store.
           </p>
